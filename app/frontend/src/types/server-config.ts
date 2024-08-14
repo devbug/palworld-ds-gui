@@ -38,8 +38,10 @@ export enum ConfigKey {
   bAutoResetGuildNoOnlinePlayers = 'bAutoResetGuildNoOnlinePlayers',
   AutoResetGuildTimeNoOnlinePlayers = 'AutoResetGuildTimeNoOnlinePlayers',
   GuildPlayerMaxNum = 'GuildPlayerMaxNum',
+  BaseCampMaxNumInGuild = 'BaseCampMaxNumInGuild',
   PalEggDefaultHatchingTime = 'PalEggDefaultHatchingTime',
   WorkSpeedRate = 'WorkSpeedRate',
+  AutoSaveSpan = 'AutoSaveSpan',
   bIsMultiplay = 'bIsMultiplay',
   bIsPvP = 'bIsPvP',
   bCanPickupOtherGuildDeathPenaltyDrop = 'bCanPickupOtherGuildDeathPenaltyDrop',
@@ -48,6 +50,7 @@ export enum ConfigKey {
   bIsStartLocationSelectByMap = 'bIsStartLocationSelectByMap',
   bExistPlayerAfterLogout = 'bExistPlayerAfterLogout',
   bEnableDefenseOtherGuildPlayer = 'bEnableDefenseOtherGuildPlayer',
+  bInvisibleOtherGuildBaseCampAreaFX = 'bInvisibleOtherGuildBaseCampAreaFX',
   CoopPlayerMaxNum = 'CoopPlayerMaxNum',
   ServerPlayerMaxNum = 'ServerPlayerMaxNum',
   ServerName = 'ServerName',
@@ -70,7 +73,8 @@ export enum ConfigKey {
   bShowPlayerList = 'bShowPlayerList',
   AllowConnectPlatform = 'AllowConnectPlatform',
   bIsUseBackupSaveData = 'bIsUseBackupSaveData',
-  LogFormatType = 'LogFormatType'
+  LogFormatType = 'LogFormatType',
+  SupplyDropSpan = 'SupplyDropSpan'
 }
 
 export type TConfig = {
@@ -113,8 +117,10 @@ export type TConfig = {
   [ConfigKey.bAutoResetGuildNoOnlinePlayers]: boolean;
   [ConfigKey.AutoResetGuildTimeNoOnlinePlayers]: number;
   [ConfigKey.GuildPlayerMaxNum]: number;
+  [ConfigKey.BaseCampMaxNumInGuild]: number;
   [ConfigKey.PalEggDefaultHatchingTime]: number;
   [ConfigKey.WorkSpeedRate]: number;
+  [ConfigKey.AutoSaveSpan]: number;
   [ConfigKey.bIsMultiplay]: boolean;
   [ConfigKey.bIsPvP]: boolean;
   [ConfigKey.bCanPickupOtherGuildDeathPenaltyDrop]: boolean;
@@ -123,6 +129,7 @@ export type TConfig = {
   [ConfigKey.bIsStartLocationSelectByMap]: boolean;
   [ConfigKey.bExistPlayerAfterLogout]: boolean;
   [ConfigKey.bEnableDefenseOtherGuildPlayer]: boolean;
+  [ConfigKey.bInvisibleOtherGuildBaseCampAreaFX]: boolean;
   [ConfigKey.CoopPlayerMaxNum]: number;
   [ConfigKey.ServerPlayerMaxNum]: number;
   [ConfigKey.ServerName]: string;
@@ -146,6 +153,7 @@ export type TConfig = {
   [ConfigKey.AllowConnectPlatform]: string;
   [ConfigKey.bIsUseBackupSaveData]: boolean;
   [ConfigKey.LogFormatType]: string;
+  [ConfigKey.SupplyDropSpan]: number;
 };
 
 export const configLabels = {
@@ -194,8 +202,10 @@ export const configLabels = {
   [ConfigKey.AutoResetGuildTimeNoOnlinePlayers]:
     'Auto Reset Guild Time (No Online Players)',
   [ConfigKey.GuildPlayerMaxNum]: 'Guild Player Maximum Number',
+  [ConfigKey.BaseCampMaxNumInGuild]: 'Guild Base Came Maximum Number',
   [ConfigKey.PalEggDefaultHatchingTime]: 'Pal Egg Default Hatching Time',
   [ConfigKey.WorkSpeedRate]: 'Work Speed Rate',
+  [ConfigKey.AutoSaveSpan]: 'Auto Save Interval Time',
   [ConfigKey.bIsMultiplay]: 'Is Multiplay',
   [ConfigKey.bIsPvP]: 'Is PvP',
   [ConfigKey.bCanPickupOtherGuildDeathPenaltyDrop]:
@@ -206,6 +216,8 @@ export const configLabels = {
   [ConfigKey.bExistPlayerAfterLogout]: 'Exist Player After Logout',
   [ConfigKey.bEnableDefenseOtherGuildPlayer]:
     'Enable Defense Other Guild Player',
+  [ConfigKey.bInvisibleOtherGuildBaseCampAreaFX]:
+    'Invisible Other Guild Base Camp FX',
   [ConfigKey.CoopPlayerMaxNum]: 'Coop Player Maximum Number',
   [ConfigKey.ServerPlayerMaxNum]: 'Server Player Maximum Number',
   [ConfigKey.ServerName]: 'Server Name',
@@ -228,7 +240,8 @@ export const configLabels = {
   [ConfigKey.bShowPlayerList]: 'Show Player List',
   [ConfigKey.AllowConnectPlatform]: 'Allow Connect Platform',
   [ConfigKey.bIsUseBackupSaveData]: 'Is Use Backup Save Data',
-  [ConfigKey.LogFormatType]: 'Log Format Type'
+  [ConfigKey.LogFormatType]: 'Log Format Type',
+  [ConfigKey.SupplyDropSpan]: 'Supply Drop Interval'
 };
 
 export const configTypes = {
@@ -271,8 +284,10 @@ export const configTypes = {
   bAutoResetGuildNoOnlinePlayers: 'boolean',
   AutoResetGuildTimeNoOnlinePlayers: 'number',
   GuildPlayerMaxNum: 'number',
+  BaseCampMaxNumInGuild: 'number',
   PalEggDefaultHatchingTime: 'number',
   WorkSpeedRate: 'number',
+  AutoSaveSpan: 'number',
   bIsMultiplay: 'boolean',
   bIsPvP: 'boolean',
   bCanPickupOtherGuildDeathPenaltyDrop: 'boolean',
@@ -281,6 +296,7 @@ export const configTypes = {
   bIsStartLocationSelectByMap: 'boolean',
   bExistPlayerAfterLogout: 'boolean',
   bEnableDefenseOtherGuildPlayer: 'boolean',
+  bInvisibleOtherGuildBaseCampAreaFX: 'boolean',
   CoopPlayerMaxNum: 'number',
   ServerPlayerMaxNum: 'number',
   ServerName: 'string',
@@ -302,5 +318,7 @@ export const configTypes = {
   RESTAPIPort: 'number',
   bShowPlayerList: 'boolean',
   AllowConnectPlatform: 'string',
-  bIsUseBackupSaveData: 'boolean'
+  bIsUseBackupSaveData: 'boolean',
+  LogFormatType: 'string',
+  SupplyDropSpan: 'number'
 };
