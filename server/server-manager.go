@@ -120,7 +120,7 @@ func (s *ServerManager) MonitorServerProcess() {
 
 func (s *ServerManager) handleStdStream(stream *io.ReadCloser) {
 	currentConfigStr := ReadConfig()
-	var adminPassword, restapiPort string
+	var adminPassword, restapiPort, restapiEnabled string
 	{
 		re := regexp.MustCompile(`AdminPassword="([^\s,]+)"`)
 		match := re.FindStringSubmatch(currentConfigStr)
@@ -134,6 +134,18 @@ func (s *ServerManager) handleStdStream(stream *io.ReadCloser) {
 		if len(match) == 2 {
 			restapiPort = match[1]
 		}
+	}
+	{
+		re := regexp.MustCompile(`RESTAPIEnabled=([^\s,]+)`)
+		match := re.FindStringSubmatch(currentConfigStr)
+		if len(match) == 2 {
+			restapiEnabled = match[1]
+		}
+	}
+
+	if strings.EqualFold(restapiEnabled, "false") {
+		utils.Log("[WARNING] REST API disabled")
+		return
 	}
 
 	scanner := bufio.NewScanner(*stream)
@@ -160,27 +172,6 @@ func (s *ServerManager) handleStdStream(stream *io.ReadCloser) {
 		// 	s.sendAnnounce(adminPassword, restapiPort, m)
 		// }
 	}
-	// reader := bufio.NewReader(*stream)
-	// for {
-	// 	line, err := reader.ReadString('\n')
-	// 	if len(line) == 0 && err != nil {
-	// 		if err == io.EOF {
-	// 			break
-	// 		}
-	// 		return
-	// 	}
-
-	// 	if len(strings.TrimSpace(line)) != 0 {
-	// 		fmt.Print(line)
-	// 	}
-
-	// 	if err != nil {
-	// 		if err == io.EOF {
-	// 			break
-	// 		}
-	// 		return
-	// 	}
-	// }
 }
 
 func (s *ServerManager) sendAnnounce(adminPassword, port string, msg string) error {
@@ -219,17 +210,6 @@ func (s *ServerManager) Start() error {
 	s.serverCmd.Dir = utils.Config.ServerPath
 	// s.serverCmd.Stdout = os.Stdout
 	// s.serverCmd.Stderr = os.Stderr
-
-	// var buf bytes.Buffer
-	// multi := io.MultiWriter(os.Stdout, &buf)
-	// s.serverCmd.Stdout = multi
-
-	// go func() {
-	// 	scanner := bufio.NewScanner(&buf)
-	// 	for scanner.Scan() {
-	// 		utils.Log(scanner.Text())
-	// 	}
-	// }()
 
 	stdout, err := s.serverCmd.StdoutPipe()
 	if err != nil {
@@ -297,38 +277,43 @@ func (s *ServerManager) Start() error {
 			Players []Player `json:"players"`
 		}
 
+		currentConfigStr := ReadConfig()
+		var adminPassword, restapiPort, restapiEnabled string
+		{
+			re := regexp.MustCompile(`AdminPassword="([^\s,]+)"`)
+			match := re.FindStringSubmatch(currentConfigStr)
+			if len(match) == 2 {
+				adminPassword = match[1]
+			}
+		}
+		{
+			re := regexp.MustCompile(`RESTAPIPort=([^\s,]+)`)
+			match := re.FindStringSubmatch(currentConfigStr)
+			if len(match) == 2 {
+				restapiPort = match[1]
+			}
+		}
+		{
+			re := regexp.MustCompile(`RESTAPIEnabled=([^\s,]+)`)
+			match := re.FindStringSubmatch(currentConfigStr)
+			if len(match) == 2 {
+				restapiEnabled = match[1]
+			}
+		}
+
+		if strings.EqualFold(restapiEnabled, "false") {
+			utils.Log("[WARNING] REST API disabled")
+			return
+		}
+
 		var players []Player
+		client := resty.New()
+		client.SetDisableWarn(true)
+		client.SetBaseURL(fmt.Sprintf("http://127.0.0.1:%v", restapiPort))
+		client.SetBasicAuth("admin", adminPassword)
+		client.SetHeader("Accept", "application/json")
 
 		for s.IsRunning() {
-			currentConfigStr := ReadConfig()
-			var adminPassword, restapiPort, restapiEnabled string
-			{
-				re := regexp.MustCompile(`AdminPassword="([^\s,]+)"`)
-				match := re.FindStringSubmatch(currentConfigStr)
-				if len(match) == 2 {
-					adminPassword = match[1]
-				}
-			}
-			{
-				re := regexp.MustCompile(`RESTAPIPort=([^\s,]+)`)
-				match := re.FindStringSubmatch(currentConfigStr)
-				if len(match) == 2 {
-					restapiPort = match[1]
-				}
-			}
-			{
-				re := regexp.MustCompile(`RESTAPIEnabled=([^\s,]+)`)
-				match := re.FindStringSubmatch(currentConfigStr)
-				if len(match) == 2 {
-					restapiEnabled = match[1]
-				}
-			}
-
-			if strings.EqualFold(restapiEnabled, "false") {
-				utils.Log("[WARNING] REST API disabled")
-				return
-			}
-
 			if len(adminPassword) == 0 /*|| len(restapiPort) == 0*/ {
 				utils.Log(fmt.Sprintf("server config parse failed: %v || %v", adminPassword, restapiPort))
 			} else {
@@ -338,20 +323,9 @@ func (s *ServerManager) Start() error {
 
 				var curr_players Players
 
-				client := resty.New()
-				client.SetDisableWarn(true)
-				client.SetBaseURL(fmt.Sprintf("http://127.0.0.1:%v", restapiPort))
-				client.SetBasicAuth("admin", adminPassword)
-				client.SetHeader("Accept", "application/json")
 				resp, err := client.R().SetResult(&curr_players).Get("v1/api/players")
 
 				if resp.StatusCode() == 200 && err == nil {
-					// utils.Log(fmt.Sprintf("players: %v, %v", curr_players, resp))
-					// err := json.Unmarshal(resp.Body(), &curr_players)
-					// if err != nil {
-					// 	utils.Log(fmt.Sprintf("%v is json?", string(resp.Body())))
-					// }
-					// utils.Log(fmt.Sprintf("unmarshaled players: %v", curr_players))
 					find := false
 					for _, player := range curr_players.Players {
 						for _, p := range players {
