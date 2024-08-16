@@ -192,6 +192,7 @@ func (s *ServerManager) sendAnnounce(adminPassword, port string, msg string) err
 		}
 
 		client := resty.New()
+		client.SetDisableWarn(true)
 		client.SetBaseURL(fmt.Sprintf("http://127.0.0.1:%v", port))
 		client.SetBasicAuth("admin", adminPassword)
 		client.SetHeader("Accept", "application/json")
@@ -338,6 +339,7 @@ func (s *ServerManager) Start() error {
 				var curr_players Players
 
 				client := resty.New()
+				client.SetDisableWarn(true)
 				client.SetBaseURL(fmt.Sprintf("http://127.0.0.1:%v", restapiPort))
 				client.SetBasicAuth("admin", adminPassword)
 				client.SetHeader("Accept", "application/json")
