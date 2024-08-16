@@ -87,7 +87,7 @@ type PersistedSettings struct {
 var Settings PersistedSettings = PersistedSettings{
 	General: PersistedSettingsGeneral{
 		APIKey:       "CHANGE_ME",
-		LaunchParams: "-useperfthreads -NoAsyncLoadingThread -UseMultithreadForDS",
+		LaunchParams: "Pal -useperfthreads -NoAsyncLoadingThread -UseMultithreadForDS",
 	},
 	Backup: PersistedSettingsBackup{
 		Enabled:   false,
@@ -158,7 +158,7 @@ func InitWindowsConfigs() {
 	Config.SteamCmdPath = filepath.Join(GetCurrentDir(), "steamcmd")
 	Config.SteamCmdExe = filepath.Join(GetCurrentDir(), "steamcmd", "steamcmd.exe")
 	Config.ServerPath = filepath.Join(GetCurrentDir(), Launch.ServerPath)
-	Config.ServerExe = filepath.Join(GetCurrentDir(), Launch.ServerPath, "PalServer.exe")
+	Config.ServerExe = filepath.Join(GetCurrentDir(), Launch.ServerPath, "Pal\\Binaries\\Win64", "PalServer-Win64-Shipping-Cmd.exe")
 	Config.ServerDefaultConfigPath = filepath.Join(GetCurrentDir(), Launch.ServerPath, "DefaultPalWorldSettings.ini")
 	Config.ServerConfigDir = filepath.Join(GetCurrentDir(), Launch.ServerPath, "Pal", "Saved", "Config", "WindowsServer")
 	Config.ServerConfigPath = filepath.Join(GetCurrentDir(), Launch.ServerPath, "Pal", "Saved", "Config", "WindowsServer", "PalWorldSettings.ini")
