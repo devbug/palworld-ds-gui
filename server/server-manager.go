@@ -333,13 +333,13 @@ func (s *ServerManager) Start() error {
 					find := false
 					for _, player := range curr_players.Players {
 						for _, p := range players {
-							if player.UserId == p.UserId && player.PlayerId == p.PlayerId {
+							if player.Name == p.Name && player.UserId == p.UserId && player.PlayerId == p.PlayerId {
 								find = true
 								break
 							}
 						}
-						if !find && player.PlayerId != "None" {
-							utils.Log(fmt.Sprintf("new player: %v", player))
+						if !find && player.PlayerId != "None" && player.Ping != 0 {
+							utils.Log(fmt.Sprintf("join player: %v", player))
 							resp, err := client.R().
 								SetBody(`{ "message": "` + player.Name + ` 님이 입장하셨습니다." }`).
 								Post("v1/api/announce")
@@ -356,7 +356,7 @@ func (s *ServerManager) Start() error {
 								break
 							}
 						}
-						if !find {
+						if !find && len(player.UserId) != 0 {
 							utils.Log(fmt.Sprintf("exit player: %v", player))
 							resp, err := client.R().
 								SetBody(`{ "message": "` + player.Name + ` 님이 퇴장하셨습니다." }`).
@@ -366,13 +366,20 @@ func (s *ServerManager) Start() error {
 							}
 						}
 					}
-					players = append([]Player{}, curr_players.Players...)
+					players = make([]Player, len(curr_players.Players))
+					var i int = 0
+					for _, v := range curr_players.Players {
+						if v.PlayerId != "None" && v.Ping != 0 {
+							players[i] = v
+							i++
+						}
+					}
 				} else {
 					utils.Log(fmt.Sprintf("REST API failed: %s, %v", resp.Status(), err))
 				}
 			}
 
-			time.Sleep(time.Second * 5)
+			time.Sleep(time.Second * 1)
 		}
 	}()
 
