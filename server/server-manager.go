@@ -151,7 +151,11 @@ func (s *ServerManager) handleStdStream(stream *io.ReadCloser) {
 	scanner := bufio.NewScanner(*stream)
 	for scanner.Scan() {
 		m := scanner.Text()
-		utils.Log(m)
+		if strings.Contains(m, "[LOG] REST") {
+			utils.LogToFile(m, false)
+		} else {
+			utils.Log(m)
+		}
 
 		if strings.Contains(m, "cheater!") {
 			var cheater_name, user_id string
