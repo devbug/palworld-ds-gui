@@ -394,11 +394,7 @@ func (s *ServerManager) Stop() error {
 	utils.Log("Stopping dedicated server...")
 
 	err := utils.KillProcessByPid(s.serverPid)
-	if err != nil {
-		return err
-	}
-
-	if s.serverCmd != nil && s.serverCmd.Process != nil {
+	if err != nil && s.serverCmd != nil && s.serverCmd.Process != nil {
 		err := s.serverCmd.Process.Kill()
 		if err != nil {
 			return err
