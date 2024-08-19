@@ -16,7 +16,7 @@ const Initializing = () => {
 
   const onConnectClick = () => {
     setServerCredentials(host, apiKey);
-    connect(host, apiKey);
+    connect(host, apiKey, 'wss');
   };
 
   return (
