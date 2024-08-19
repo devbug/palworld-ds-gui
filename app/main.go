@@ -1,5 +1,5 @@
-//go:build windows
-// +build windows
+//go:build !linux
+// +build !linux
 
 package main
 
@@ -13,6 +13,7 @@ import (
 	"github.com/wailsapp/wails/v2/pkg/logger"
 	"github.com/wailsapp/wails/v2/pkg/options"
 	"github.com/wailsapp/wails/v2/pkg/options/assetserver"
+	"github.com/wailsapp/wails/v2/pkg/options/mac"
 	"github.com/wailsapp/wails/v2/pkg/options/windows"
 )
 
@@ -80,6 +81,25 @@ func main() {
 			DisableWindowIcon:    false,
 			WebviewUserDataPath:  "",
 			ZoomFactor:           1.0,
+		},
+		Mac: &mac.Options{
+			TitleBar: &mac.TitleBar{
+				TitlebarAppearsTransparent: false,
+				HideTitle:                  false,
+				HideTitleBar:               false,
+				FullSizeContent:            false,
+				UseToolbar:                 false,
+				HideToolbarSeparator:       true,
+			},
+			Appearance:           mac.NSAppearanceNameDarkAqua,
+			WebviewIsTransparent: false,
+			WindowIsTranslucent:  false,
+			About: &mac.AboutInfo{
+				Title: "Palworld Dedicated Server GUI",
+			},
+		},
+		Debug: options.Debug{
+			OpenInspectorOnStartup: false,
 		},
 	})
 
