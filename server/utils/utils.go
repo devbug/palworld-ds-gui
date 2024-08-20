@@ -88,7 +88,7 @@ type PersistedSettings struct {
 var Settings PersistedSettings = PersistedSettings{
 	General: PersistedSettingsGeneral{
 		APIKey:       "CHANGE_ME",
-		LaunchParams: "Pal -useperfthreads -NoAsyncLoadingThread -UseMultithreadForDS",
+		LaunchParams: "-useperfthreads -NoAsyncLoadingThread -UseMultithreadForDS",
 	},
 	Backup: PersistedSettingsBackup{
 		Enabled:   false,
@@ -191,7 +191,6 @@ func InitLinuxConfigs() {
 	Config.BackupsPath = filepath.Join(GetCurrentDir(), "backups")
 	Config.PersistedSettingsPath = filepath.Join(GetCurrentDir(), "gui-server-settings.ini")
 	Config.SteamCmdUrl = "https://steamcdn-a.akamaihd.net/client/installer/steamcmd_linux.tar.gz"
-	Settings.General.LaunchParams = "-useperfthreads -NoAsyncLoadingThread -UseMultithreadForDS"
 }
 
 var sections = map[string]interface{}{

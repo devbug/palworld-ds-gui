@@ -9,6 +9,7 @@ import (
 	"os/exec"
 	"palworld-ds-gui-server/utils"
 	"regexp"
+	"runtime"
 	"strings"
 	"time"
 
@@ -212,6 +213,11 @@ func (s *ServerManager) Start() error {
 	utils.Log("Starting dedicated server...")
 
 	launchParamsSlice := strings.Split(utils.Settings.General.LaunchParams, " ")
+	if runtime.GOOS == "windows" {
+		launchParamsSlice = append(launchParamsSlice, "")
+		copy(launchParamsSlice[1:], launchParamsSlice[0:])
+		launchParamsSlice[0] = "Pal"
+	}
 
 	s.serverCmd = exec.Command(utils.Config.ServerExe, launchParamsSlice...)
 	s.serverCmd.Dir = utils.Config.ServerPath
