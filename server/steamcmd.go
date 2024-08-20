@@ -24,7 +24,8 @@ func (s *SteamCMD) Init() {
 }
 
 func (s *SteamCMD) DownloadExecutable() {
-	zipPath := path.Join(utils.Config.SteamCmdPath, "steamcmd.zip")
+	_, name := path.Split(utils.Config.SteamCmdUrl)
+	zipPath := path.Join(utils.Config.SteamCmdPath, name)
 
 	err := utils.DownloadFile(utils.Config.SteamCmdUrl, zipPath)
 	if err != nil {

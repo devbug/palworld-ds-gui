@@ -48,6 +48,9 @@ func (s *ServerManager) Init() {
 		os.Mkdir(utils.Config.ServerPath, 0755)
 		s.DownloadDedicatedServer()
 	}
+	if _, err := os.Stat(utils.Config.ServerExe); os.IsNotExist(err) {
+		s.DownloadDedicatedServer()
+	}
 }
 
 func (s *ServerManager) DownloadDedicatedServer() error {

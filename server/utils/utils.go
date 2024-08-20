@@ -9,6 +9,7 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"runtime"
 	"strings"
 	"time"
 
@@ -132,7 +133,11 @@ func Init(serverJSON string) {
 
 	flag.Parse()
 
-	InitWindowsConfigs()
+	if runtime.GOOS == "windows" {
+		InitWindowsConfigs()
+	} else if runtime.GOOS == "linux" {
+		InitLinuxConfigs()
+	}
 
 	logsFile, logErr := os.OpenFile(Config.LogsPath, os.O_RDWR|os.O_CREATE, 0666)
 	if logErr != nil {
@@ -169,6 +174,24 @@ func InitWindowsConfigs() {
 	Config.BackupsPath = filepath.Join(GetCurrentDir(), "backups")
 	Config.PersistedSettingsPath = filepath.Join(GetCurrentDir(), "gui-server-settings.ini")
 	Config.SteamCmdUrl = "https://steamcdn-a.akamaihd.net/client/installer/steamcmd.zip"
+}
+
+func InitLinuxConfigs() {
+	Config.SteamCmdPath = filepath.Join(GetCurrentDir(), "steamcmd")
+	Config.SteamCmdExe = filepath.Join(GetCurrentDir(), "steamcmd", "steamcmd.sh")
+	Config.ServerPath = filepath.Join(GetCurrentDir(), Launch.ServerPath)
+	Config.ServerExe = filepath.Join(GetCurrentDir(), Launch.ServerPath, "PalServer.sh")
+	Config.ServerDefaultConfigPath = filepath.Join(GetCurrentDir(), Launch.ServerPath, "DefaultPalWorldSettings.ini")
+	Config.ServerConfigDir = filepath.Join(GetCurrentDir(), Launch.ServerPath, "Pal", "Saved", "Config", "LinuxServer")
+	Config.ServerConfigPath = filepath.Join(GetCurrentDir(), Launch.ServerPath, "Pal", "Saved", "Config", "LinuxServer", "PalWorldSettings.ini")
+	Config.ServerGameUserSettingsPath = filepath.Join(GetCurrentDir(), Launch.ServerPath, "Pal", "Saved", "Config", "LinuxServer", "GameUserSettings.ini")
+	Config.ServerSaveDir = filepath.Join(GetCurrentDir(), Launch.ServerPath, "Pal", "Saved", "SaveGames", "0")
+	Config.LogsPath = filepath.Join(GetCurrentDir(), "logs.txt")
+	Config.ServerProcessName = "PalServer-Linux-Shipping"
+	Config.BackupsPath = filepath.Join(GetCurrentDir(), "backups")
+	Config.PersistedSettingsPath = filepath.Join(GetCurrentDir(), "gui-server-settings.ini")
+	Config.SteamCmdUrl = "https://steamcdn-a.akamaihd.net/client/installer/steamcmd_linux.tar.gz"
+	Settings.General.LaunchParams = "-useperfthreads -NoAsyncLoadingThread -UseMultithreadForDS"
 }
 
 var sections = map[string]interface{}{
@@ -269,8 +292,13 @@ func FindProcessByName(processName string) (ps.Process, error) {
 		return nil, fmt.Errorf("error listing processes: %v", err)
 	}
 
+	procNameToFind := processName
+	if runtime.GOOS == "linux" {
+		procNameToFind = processName[:15]
+	}
+
 	for _, process := range processes {
-		if strings.Contains(process.Executable(), processName) {
+		if strings.Contains(process.Executable(), procNameToFind) {
 			return process, nil
 		}
 	}
