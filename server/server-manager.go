@@ -318,6 +318,9 @@ func (s *ServerManager) Start() error {
 			utils.Log("[WARNING] REST API disabled")
 			return
 		}
+		if len(restapiPort) == 0 {
+			restapiPort = "8212"
+		}
 
 		var players []Player
 		client := resty.New()
@@ -330,10 +333,6 @@ func (s *ServerManager) Start() error {
 			if len(adminPassword) == 0 /*|| len(restapiPort) == 0*/ {
 				utils.Log(fmt.Sprintf("server config parse failed: %v || %v", adminPassword, restapiPort))
 			} else {
-				if len(restapiPort) == 0 {
-					restapiPort = "8212"
-				}
-
 				var curr_players Players
 
 				resp, err := client.R().SetResult(&curr_players).Get("v1/api/players")
