@@ -387,7 +387,7 @@ func (s *ServerManager) Start() error {
 				}
 			}
 
-			time.Sleep(time.Second * 1)
+			time.Sleep(time.Second * 5)
 		}
 	}()
 
