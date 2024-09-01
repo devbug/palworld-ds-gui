@@ -86,6 +86,11 @@ export type TTimedRestartSettings = {
   interval: number;
 };
 
+export type TStopCountdownSettings = {
+  enabled: boolean;
+  startat: number;
+};
+
 export type TRestartOnCrashSettings = {
   enabled: boolean;
 };
@@ -93,6 +98,7 @@ export type TRestartOnCrashSettings = {
 export type TAdditionalSettings = {
   timedRestart: TTimedRestartSettings;
   restartOnCrash: TRestartOnCrashSettings;
+  stopCountdown: TStopCountdownSettings;
 };
 
 export type TServerCredentials = {

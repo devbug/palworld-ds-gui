@@ -25,6 +25,7 @@ func SaveAdditionalSettingsHandler(conn *websocket.Conn, data []byte) {
 
 	utils.Settings.TimedRestart = message.Data.NewSettings.TimedRestart
 	utils.Settings.RestartOnCrash = message.Data.NewSettings.RestartOnCrash
+	utils.Settings.StopCountdown = message.Data.NewSettings.StopCountdown
 	utils.SaveSettings()
 
 	if message.Data.NewSettings.TimedRestart.Enabled {

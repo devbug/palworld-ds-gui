@@ -73,6 +73,11 @@ type PersistedRestartOnCrash struct {
 	Enabled bool `ini:"enabled"`
 }
 
+type PersistedStopCountdown struct {
+	Enabled bool  `ini:"enabled"`
+	Startat int32 `ini:"startat"`
+}
+
 type PersistedSettingsGeneral struct {
 	APIKey       string `ini:"apiKey"`
 	LaunchParams string `ini:"launchParams"`
@@ -83,6 +88,7 @@ type PersistedSettings struct {
 	Backup         PersistedSettingsBackup
 	TimedRestart   PersistedTimedRestart
 	RestartOnCrash PersistedRestartOnCrash
+	StopCountdown  PersistedStopCountdown
 }
 
 var Settings PersistedSettings = PersistedSettings{
@@ -101,6 +107,10 @@ var Settings PersistedSettings = PersistedSettings{
 	},
 	RestartOnCrash: PersistedRestartOnCrash{
 		Enabled: false,
+	},
+	StopCountdown: PersistedStopCountdown{
+		Enabled: false,
+		Startat: 30,
 	},
 }
 
@@ -198,6 +208,7 @@ var sections = map[string]interface{}{
 	"Backup":         &Settings.Backup,
 	"TimedRestart":   &Settings.TimedRestart,
 	"RestartOnCrash": &Settings.RestartOnCrash,
+	"StopCountdown":  &Settings.StopCountdown,
 }
 
 func LoadSettings() error {

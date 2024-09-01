@@ -34,6 +34,10 @@ const initialState: IServerState = {
     },
     restartOnCrash: {
       enabled: false
+    },
+    stopCountdown: {
+      enabled: false,
+      startat: 30
     }
   },
   version: undefined

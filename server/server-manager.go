@@ -123,6 +123,37 @@ func (s *ServerManager) MonitorServerProcess() {
 }
 
 func (s *ServerManager) handleStdStream(stream *io.ReadCloser) {
+	scanner := bufio.NewScanner(*stream)
+	for scanner.Scan() {
+		m := scanner.Text()
+		if strings.Contains(m, "[LOG] REST") {
+			utils.LogToFile(m, false)
+		} else {
+			utils.Log(m)
+		}
+
+		if strings.Contains(m, "cheater!") {
+			var cheater_name, user_id string
+			{
+				re := regexp.MustCompile(`\[([0-9]+)\] ([^\s]+) .* cheater!`)
+				match := re.FindStringSubmatch(m)
+				if len(match) == 3 {
+					user_id = match[1]
+					cheater_name = match[2]
+				}
+			}
+			s.SendAnnounce(fmt.Sprintf("%v(%v)은/는 핵을 사용 중인 것으로 의심됩니다!", cheater_name, user_id))
+		}
+		// if strings.Contains(m, "joined the server") {
+		// 	s.SendAnnounce(m)
+		// }
+		// if strings.Contains(m, "left the server") {
+		// 	s.SendAnnounce(m)
+		// }
+	}
+}
+
+func (s *ServerManager) SendAnnounce(msg string) error {
 	currentConfigStr := ReadConfig()
 	var adminPassword, restapiPort, restapiEnabled string
 	{
@@ -149,50 +180,19 @@ func (s *ServerManager) handleStdStream(stream *io.ReadCloser) {
 
 	if strings.EqualFold(restapiEnabled, "false") {
 		utils.Log("[WARNING] REST API disabled")
-		return
+		return nil
 	}
 
-	scanner := bufio.NewScanner(*stream)
-	for scanner.Scan() {
-		m := scanner.Text()
-		if strings.Contains(m, "[LOG] REST") {
-			utils.LogToFile(m, false)
-		} else {
-			utils.Log(m)
-		}
-
-		if strings.Contains(m, "cheater!") {
-			var cheater_name, user_id string
-			{
-				re := regexp.MustCompile(`\[([0-9]+)\] ([^\s]+) .* cheater!`)
-				match := re.FindStringSubmatch(m)
-				if len(match) == 3 {
-					user_id = match[1]
-					cheater_name = match[2]
-				}
-			}
-			s.sendAnnounce(adminPassword, restapiPort, fmt.Sprintf("%v(%v)은/는 핵을 사용 중인 것으로 의심됩니다!", cheater_name, user_id))
-		}
-		// if strings.Contains(m, "joined the server") {
-		// 	s.sendAnnounce(adminPassword, restapiPort, m)
-		// }
-		// if strings.Contains(m, "left the server") {
-		// 	s.sendAnnounce(adminPassword, restapiPort, m)
-		// }
-	}
-}
-
-func (s *ServerManager) sendAnnounce(adminPassword, port string, msg string) error {
 	if len(adminPassword) == 0 /*|| len(restapiPort) == 0*/ {
-		utils.Log(fmt.Sprintf("server config parse failed: %v || %v", adminPassword, port))
+		utils.Log(fmt.Sprintf("server config parse failed: %v || %v", adminPassword, restapiPort))
 	} else {
-		if len(port) == 0 {
-			port = "8212"
+		if len(restapiPort) == 0 {
+			restapiPort = "8212"
 		}
 
 		client := resty.New()
 		client.SetDisableWarn(true)
-		client.SetBaseURL(fmt.Sprintf("http://127.0.0.1:%v", port))
+		client.SetBaseURL(fmt.Sprintf("http://127.0.0.1:%v", restapiPort))
 		client.SetBasicAuth("admin", adminPassword)
 		client.SetHeader("Accept", "application/json")
 

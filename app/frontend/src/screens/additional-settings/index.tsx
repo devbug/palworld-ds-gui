@@ -7,10 +7,14 @@ import { Button } from '@nextui-org/react';
 import { IconDeviceFloppy } from '@tabler/icons-react';
 import { saveAdditionalSettings } from '../../actions/app';
 import RestartOnCrashSection from './restart-on-crash-section';
+import StopCountdownSection from './stop-countdown-section';
 
 const EMPTY_ERRORS = {
   timedRestart: {
     interval: false
+  },
+  stopCountdown: {
+    startat: false
   }
 };
 
@@ -31,6 +35,15 @@ const AdditionalSettings = () => {
       additionalSettings.timedRestart.interval > 24
     ) {
       newErrors.timedRestart.interval = true;
+    }
+
+    if (
+      !additionalSettings.stopCountdown.startat ||
+      isNaN(additionalSettings.stopCountdown.startat) ||
+      additionalSettings.stopCountdown.startat <= 0 ||
+      additionalSettings.stopCountdown.startat > 100
+    ) {
+      newErrors.stopCountdown.startat = true;
     }
 
     const hasErrors = Object.values(newErrors).some((error) =>
@@ -79,6 +92,22 @@ const AdditionalSettings = () => {
           setAdditionalSettings((prev) => ({
             ...prev,
             restartOnCrash: { ...prev.restartOnCrash, [key]: value }
+          }));
+        }}
+      />
+
+      <StopCountdownSection
+        value={additionalSettings.stopCountdown}
+        errors={errors.stopCountdown}
+        onChange={(key, value) => {
+          setAdditionalSettings((prev) => ({
+            ...prev,
+            stopCountdown: { ...prev.stopCountdown, [key]: value }
+          }));
+
+          setErrors((prev) => ({
+            ...prev,
+            stopCountdown: { ...prev.stopCountdown, [key]: false }
           }));
         }}
       />

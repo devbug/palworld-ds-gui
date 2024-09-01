@@ -38,6 +38,7 @@ func ClientInitHandler(conn *websocket.Conn, data []byte) {
 	additionalSettings := AdditionalSettings{
 		TimedRestart:   utils.Settings.TimedRestart,
 		RestartOnCrash: utils.Settings.RestartOnCrash,
+		StopCountdown:  utils.Settings.StopCountdown,
 	}
 
 	conn.WriteJSON(ClientInitResponse{

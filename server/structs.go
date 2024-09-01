@@ -30,6 +30,7 @@ type ClientInitResData struct {
 type AdditionalSettings struct {
 	TimedRestart   utils.PersistedTimedRestart   `json:"timedRestart"`
 	RestartOnCrash utils.PersistedRestartOnCrash `json:"restartOnCrash"`
+	StopCountdown  utils.PersistedStopCountdown  `json:"stopCountdown"`
 }
 
 // ------------ RESPONSES ------------

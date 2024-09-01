@@ -113,6 +113,10 @@ export const onAdditionalSettingsUpdated = (data) => {
     },
     restartOnCrash: {
       enabled: data.restartOnCrash.Enabled
+    },
+    stopCountdown: {
+      enabled: data.stopCountdown.Enabled,
+      startat: data.stopCountdown.Startat
     }
   };
 

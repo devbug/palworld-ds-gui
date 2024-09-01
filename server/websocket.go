@@ -152,7 +152,7 @@ func EmitAdditionalSettings(exclude *websocket.Conn) {
 			Event:   "ADDITIONAL_SETTINGS_CHANGED",
 			Success: true,
 		},
-		Data: AdditionalSettings{utils.Settings.TimedRestart, utils.Settings.RestartOnCrash},
+		Data: AdditionalSettings{utils.Settings.TimedRestart, utils.Settings.RestartOnCrash, utils.Settings.StopCountdown},
 	}, exclude)
 }
 

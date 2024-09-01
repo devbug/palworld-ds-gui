@@ -63,6 +63,10 @@ export const saveAdditionalSettings = async (
     },
     restartOnCrash: {
       enabled: Boolean(newSettings.restartOnCrash.enabled)
+    },
+    stopCountdown: {
+      enabled: Boolean(newSettings.stopCountdown.enabled),
+      startat: +newSettings.stopCountdown.startat
     }
   });
 
