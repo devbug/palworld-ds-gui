@@ -1,5 +1,7 @@
 export enum ConfigKey {
   Difficulty = 'Difficulty',
+  RandomizerType = 'RandomizerType',
+  RandomizerSeed = 'RandomizerSeed',
   DayTimeSpeedRate = 'DayTimeSpeedRate',
   NightTimeSpeedRate = 'NightTimeSpeedRate',
   ExpRate = 'ExpRate',
@@ -17,6 +19,7 @@ export enum ConfigKey {
   PalStaminaDecreaseRate = 'PalStaminaDecreaseRate',
   PalAutoHPRegeneRate = 'PalAutoHPRegeneRate',
   PalAutoHpRegeneRateInSleep = 'PalAutoHpRegeneRateInSleep',
+  BuildObjectHpRate = 'BuildObjectHpRate',
   BuildObjectDamageRate = 'BuildObjectDamageRate',
   BuildObjectDeteriorationDamageRate = 'BuildObjectDeteriorationDamageRate',
   CollectionDropRate = 'CollectionDropRate',
@@ -44,6 +47,8 @@ export enum ConfigKey {
   AutoSaveSpan = 'AutoSaveSpan',
   bIsMultiplay = 'bIsMultiplay',
   bIsPvP = 'bIsPvP',
+  bHardcore = 'bHardcore',
+  bPalLost = 'bPalLost',
   bCanPickupOtherGuildDeathPenaltyDrop = 'bCanPickupOtherGuildDeathPenaltyDrop',
   bEnableNonLoginPenalty = 'bEnableNonLoginPenalty',
   bEnableFastTravel = 'bEnableFastTravel',
@@ -51,6 +56,8 @@ export enum ConfigKey {
   bExistPlayerAfterLogout = 'bExistPlayerAfterLogout',
   bEnableDefenseOtherGuildPlayer = 'bEnableDefenseOtherGuildPlayer',
   bInvisibleOtherGuildBaseCampAreaFX = 'bInvisibleOtherGuildBaseCampAreaFX',
+  bBuildAreaLimit = 'bBuildAreaLimit',
+  ItemWeightRate = 'ItemWeightRate',
   CoopPlayerMaxNum = 'CoopPlayerMaxNum',
   ServerPlayerMaxNum = 'ServerPlayerMaxNum',
   ServerName = 'ServerName',
@@ -71,14 +78,20 @@ export enum ConfigKey {
   RESTAPIEnabled = 'RESTAPIEnabled',
   RESTAPIPort = 'RESTAPIPort',
   bShowPlayerList = 'bShowPlayerList',
+  ChatPostLimitPerMinute = 'ChatPostLimitPerMinute',
   AllowConnectPlatform = 'AllowConnectPlatform',
   bIsUseBackupSaveData = 'bIsUseBackupSaveData',
   LogFormatType = 'LogFormatType',
-  SupplyDropSpan = 'SupplyDropSpan'
+  SupplyDropSpan = 'SupplyDropSpan',
+  EnablePredatorBossPal = 'EnablePredatorBossPal',
+  MaxBuildingLimitNum = 'MaxBuildingLimitNum',
+  ServerReplicatePawnCullDistance = 'ServerReplicatePawnCullDistance'
 }
 
 export type TConfig = {
   [ConfigKey.Difficulty]: string;
+  [ConfigKey.RandomizerType]: string;
+  [ConfigKey.RandomizerSeed]: string;
   [ConfigKey.DayTimeSpeedRate]: number;
   [ConfigKey.NightTimeSpeedRate]: number;
   [ConfigKey.ExpRate]: number;
@@ -96,6 +109,7 @@ export type TConfig = {
   [ConfigKey.PalStaminaDecreaseRate]: number;
   [ConfigKey.PalAutoHPRegeneRate]: number;
   [ConfigKey.PalAutoHpRegeneRateInSleep]: number;
+  [ConfigKey.BuildObjectHpRate]: number;
   [ConfigKey.BuildObjectDamageRate]: number;
   [ConfigKey.BuildObjectDeteriorationDamageRate]: number;
   [ConfigKey.CollectionDropRate]: number;
@@ -123,6 +137,8 @@ export type TConfig = {
   [ConfigKey.AutoSaveSpan]: number;
   [ConfigKey.bIsMultiplay]: boolean;
   [ConfigKey.bIsPvP]: boolean;
+  [ConfigKey.bHardcore]: boolean;
+  [ConfigKey.bPalLost]: boolean;
   [ConfigKey.bCanPickupOtherGuildDeathPenaltyDrop]: boolean;
   [ConfigKey.bEnableNonLoginPenalty]: boolean;
   [ConfigKey.bEnableFastTravel]: boolean;
@@ -130,6 +146,8 @@ export type TConfig = {
   [ConfigKey.bExistPlayerAfterLogout]: boolean;
   [ConfigKey.bEnableDefenseOtherGuildPlayer]: boolean;
   [ConfigKey.bInvisibleOtherGuildBaseCampAreaFX]: boolean;
+  [ConfigKey.bBuildAreaLimit]: boolean;
+  [ConfigKey.ItemWeightRate]: number;
   [ConfigKey.CoopPlayerMaxNum]: number;
   [ConfigKey.ServerPlayerMaxNum]: number;
   [ConfigKey.ServerName]: string;
@@ -150,14 +168,20 @@ export type TConfig = {
   [ConfigKey.RESTAPIEnabled]: boolean;
   [ConfigKey.RESTAPIPort]: number;
   [ConfigKey.bShowPlayerList]: boolean;
+  [ConfigKey.ChatPostLimitPerMinute]: number;
   [ConfigKey.AllowConnectPlatform]: string;
   [ConfigKey.bIsUseBackupSaveData]: boolean;
   [ConfigKey.LogFormatType]: string;
   [ConfigKey.SupplyDropSpan]: number;
+  [ConfigKey.EnablePredatorBossPal]: boolean;
+  [ConfigKey.MaxBuildingLimitNum]: number;
+  [ConfigKey.ServerReplicatePawnCullDistance]: number;
 };
 
 export const configLabels = {
   [ConfigKey.Difficulty]: 'Difficulty',
+  [ConfigKey.RandomizerType]: 'Randomizer Type',
+  [ConfigKey.RandomizerSeed]: 'Randomizer Seed',
   [ConfigKey.DayTimeSpeedRate]: 'Day Time Speed Rate',
   [ConfigKey.NightTimeSpeedRate]: 'Night Time Speed Rate',
   [ConfigKey.ExpRate]: 'Experience Rate',
@@ -177,6 +201,7 @@ export const configLabels = {
   [ConfigKey.PalAutoHPRegeneRate]: 'Pal Auto HP Regeneration Rate',
   [ConfigKey.PalAutoHpRegeneRateInSleep]:
     'Pal Auto HP Regeneration Rate (Sleep)',
+  [ConfigKey.BuildObjectHpRate]: 'Build Object HP Rate',
   [ConfigKey.BuildObjectDamageRate]: 'Build Object Damage Rate',
   [ConfigKey.BuildObjectDeteriorationDamageRate]:
     'Build Object Deterioration Damage Rate',
@@ -208,6 +233,8 @@ export const configLabels = {
   [ConfigKey.AutoSaveSpan]: 'Auto Save Interval Time',
   [ConfigKey.bIsMultiplay]: 'Is Multiplay',
   [ConfigKey.bIsPvP]: 'Is PvP',
+  [ConfigKey.bHardcore]: 'Enable Hardcore',
+  [ConfigKey.bPalLost]: 'Lose pals on (pal)death',
   [ConfigKey.bCanPickupOtherGuildDeathPenaltyDrop]:
     'Can Pickup Other Guild Death Penalty Drop',
   [ConfigKey.bEnableNonLoginPenalty]: 'Enable Non-Login Penalty',
@@ -218,6 +245,8 @@ export const configLabels = {
     'Enable Defense Other Guild Player',
   [ConfigKey.bInvisibleOtherGuildBaseCampAreaFX]:
     'Invisible Other Guild Base Camp FX',
+  [ConfigKey.bBuildAreaLimit]: 'Build Area Limit',
+  [ConfigKey.ItemWeightRate]: 'Item Weight Rate',
   [ConfigKey.CoopPlayerMaxNum]: 'Coop Player Maximum Number',
   [ConfigKey.ServerPlayerMaxNum]: 'Server Player Maximum Number',
   [ConfigKey.ServerName]: 'Server Name',
@@ -238,14 +267,21 @@ export const configLabels = {
   [ConfigKey.RESTAPIEnabled]: 'REST API Enabled',
   [ConfigKey.RESTAPIPort]: 'REST API Port',
   [ConfigKey.bShowPlayerList]: 'Show Player List',
+  [ConfigKey.ChatPostLimitPerMinute]: 'Chat Post Limit per Minute',
   [ConfigKey.AllowConnectPlatform]: 'Allow Connect Platform',
   [ConfigKey.bIsUseBackupSaveData]: 'Is Use Backup Save Data',
   [ConfigKey.LogFormatType]: 'Log Format Type',
-  [ConfigKey.SupplyDropSpan]: 'Supply Drop Interval'
+  [ConfigKey.SupplyDropSpan]: 'Supply Drop Interval',
+  [ConfigKey.EnablePredatorBossPal]: 'Enable Predator Boss as Pals',
+  [ConfigKey.MaxBuildingLimitNum]: 'Maximum Building Limit Number per base',
+  [ConfigKey.ServerReplicatePawnCullDistance]:
+    'Server Replicate Pawn Cull Distance'
 };
 
 export const configTypes = {
   Difficulty: 'string',
+  RandomizerType: 'string',
+  RandomizerSeed: 'string',
   DayTimeSpeedRate: 'number',
   NightTimeSpeedRate: 'number',
   ExpRate: 'number',
@@ -263,6 +299,7 @@ export const configTypes = {
   PalStaminaDecreaseRate: 'number',
   PalAutoHPRegeneRate: 'number',
   PalAutoHpRegeneRateInSleep: 'number',
+  BuildObjectHpRate: 'number',
   BuildObjectDamageRate: 'number',
   BuildObjectDeteriorationDamageRate: 'number',
   CollectionDropRate: 'number',
@@ -290,6 +327,8 @@ export const configTypes = {
   AutoSaveSpan: 'number',
   bIsMultiplay: 'boolean',
   bIsPvP: 'boolean',
+  bHardcore: 'boolean',
+  bPalLost: 'boolean',
   bCanPickupOtherGuildDeathPenaltyDrop: 'boolean',
   bEnableNonLoginPenalty: 'boolean',
   bEnableFastTravel: 'boolean',
@@ -297,6 +336,8 @@ export const configTypes = {
   bExistPlayerAfterLogout: 'boolean',
   bEnableDefenseOtherGuildPlayer: 'boolean',
   bInvisibleOtherGuildBaseCampAreaFX: 'boolean',
+  bBuildAreaLimit: 'boolean',
+  ItemWeightRate: 'number',
   CoopPlayerMaxNum: 'number',
   ServerPlayerMaxNum: 'number',
   ServerName: 'string',
@@ -317,8 +358,12 @@ export const configTypes = {
   RESTAPIEnabled: 'boolean',
   RESTAPIPort: 'number',
   bShowPlayerList: 'boolean',
+  ChatPostLimitPerMinute: 'number',
   AllowConnectPlatform: 'string',
   bIsUseBackupSaveData: 'boolean',
   LogFormatType: 'string',
-  SupplyDropSpan: 'number'
+  SupplyDropSpan: 'number',
+  EnablePredatorBossPal: 'boolean',
+  MaxBuildingLimitNum: 'number',
+  ServerReplicatePawnCullDistance: 'number'
 };
