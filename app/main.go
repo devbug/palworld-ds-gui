@@ -48,7 +48,7 @@ func main() {
 	utils.LogToFile("main.go: main() - Managers created")
 
 	err := wails.Run(&options.App{
-		Title:             "Palworld Dedicated Server GUI (for v0.3.5)",
+		Title:             "Palworld Dedicated Server GUI (for v0.4.11)",
 		Width:             width,
 		Height:            height,
 		MinWidth:          width,

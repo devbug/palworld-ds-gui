@@ -30,7 +30,7 @@ const Initializing = () => {
             height={350}
           />
           <p className="text-xl font-bold text-center">Dedicated Server GUI (modified)</p>
-          <p className="text-sm text-neutral-500">v{APP_VERSION} - for v0.3.5</p>
+          <p className="text-sm text-neutral-500">v{APP_VERSION} - for v0.4.11</p>
         </div>
 
         <div className="flex flex-col gap-2 w-[500px]">
