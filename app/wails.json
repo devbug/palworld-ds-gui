@@ -14,8 +14,8 @@
   },
   "info": {
     "companyName": "DiogoMartino",
-    "productName": "Palworld Dedicated Server GUI (for v0.4.11)",
-    "productVersion": "1.0.7",
+    "productName": "Palworld Dedicated Server GUI (for v0.6.0+)",
+    "productVersion": "1.0.8",
     "copyright": "2024",
     "comments": "https://github.com/diogomartino/palworld-ds-gui"
   }

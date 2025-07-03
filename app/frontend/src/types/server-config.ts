@@ -83,7 +83,15 @@ export enum ConfigKey {
   bIsUseBackupSaveData = 'bIsUseBackupSaveData',
   LogFormatType = 'LogFormatType',
   SupplyDropSpan = 'SupplyDropSpan',
-  EnablePredatorBossPal = 'EnablePredatorBossPal',
+  
+  // 🔥 v0.6.0 새로 추가된 설정들
+  bAllowGlobalPalboxExport = 'bAllowGlobalPalboxExport',
+  bAllowGlobalPalboxImport = 'bAllowGlobalPalboxImport',
+  bCharacterRecreateInHardcore = 'bCharacterRecreateInHardcore',
+  bIsRandomizerPalLevelRandom = 'bIsRandomizerPalLevelRandom',
+  CrossplayPlatforms = 'CrossplayPlatforms',
+  EquipmentDurabilityDamageRate = 'EquipmentDurabilityDamageRate',
+  ItemContainerForceMarkDirtyInterval = 'ItemContainerForceMarkDirtyInterval',
   MaxBuildingLimitNum = 'MaxBuildingLimitNum',
   ServerReplicatePawnCullDistance = 'ServerReplicatePawnCullDistance'
 }
@@ -173,7 +181,13 @@ export type TConfig = {
   [ConfigKey.bIsUseBackupSaveData]: boolean;
   [ConfigKey.LogFormatType]: string;
   [ConfigKey.SupplyDropSpan]: number;
-  [ConfigKey.EnablePredatorBossPal]: boolean;
+  [ConfigKey.bAllowGlobalPalboxExport]: boolean;
+  [ConfigKey.bAllowGlobalPalboxImport]: boolean;
+  [ConfigKey.bCharacterRecreateInHardcore]: boolean;
+  [ConfigKey.bIsRandomizerPalLevelRandom]: boolean;
+  [ConfigKey.CrossplayPlatforms]: string;
+  [ConfigKey.EquipmentDurabilityDamageRate]: number;
+  [ConfigKey.ItemContainerForceMarkDirtyInterval]: number;
   [ConfigKey.MaxBuildingLimitNum]: number;
   [ConfigKey.ServerReplicatePawnCullDistance]: number;
 };
@@ -227,7 +241,7 @@ export const configLabels = {
   [ConfigKey.AutoResetGuildTimeNoOnlinePlayers]:
     'Auto Reset Guild Time (No Online Players)',
   [ConfigKey.GuildPlayerMaxNum]: 'Guild Player Maximum Number',
-  [ConfigKey.BaseCampMaxNumInGuild]: 'Guild Base Came Maximum Number',
+  [ConfigKey.BaseCampMaxNumInGuild]: 'Guild Base Camp Maximum Number',
   [ConfigKey.PalEggDefaultHatchingTime]: 'Pal Egg Default Hatching Time',
   [ConfigKey.WorkSpeedRate]: 'Work Speed Rate',
   [ConfigKey.AutoSaveSpan]: 'Auto Save Interval Time',
@@ -268,14 +282,21 @@ export const configLabels = {
   [ConfigKey.RESTAPIPort]: 'REST API Port',
   [ConfigKey.bShowPlayerList]: 'Show Player List',
   [ConfigKey.ChatPostLimitPerMinute]: 'Chat Post Limit per Minute',
-  [ConfigKey.AllowConnectPlatform]: 'Allow Connect Platform',
-  [ConfigKey.bIsUseBackupSaveData]: 'Is Use Backup Save Data',
+  [ConfigKey.AllowConnectPlatform]: 'Allow Connect Platform (Deprecated)',
+  [ConfigKey.bIsUseBackupSaveData]: 'Use Backup Save Data',
   [ConfigKey.LogFormatType]: 'Log Format Type',
   [ConfigKey.SupplyDropSpan]: 'Supply Drop Interval',
-  [ConfigKey.EnablePredatorBossPal]: 'Enable Predator Boss as Pals',
-  [ConfigKey.MaxBuildingLimitNum]: 'Maximum Building Limit Number per base',
-  [ConfigKey.ServerReplicatePawnCullDistance]:
-    'Server Replicate Pawn Cull Distance'
+  
+  // 🔥 v0.6.0 새로 추가된 설정들
+  [ConfigKey.bAllowGlobalPalboxExport]: 'Allow Global Palbox Export',
+  [ConfigKey.bAllowGlobalPalboxImport]: 'Allow Global Palbox Import',
+  [ConfigKey.bCharacterRecreateInHardcore]: 'Character Recreate in Hardcore',
+  [ConfigKey.bIsRandomizerPalLevelRandom]: 'Random Pal Level Randomization',
+  [ConfigKey.CrossplayPlatforms]: 'Crossplay Platforms',
+  [ConfigKey.EquipmentDurabilityDamageRate]: 'Equipment Durability Damage Rate',
+  [ConfigKey.ItemContainerForceMarkDirtyInterval]: 'Item Container Force Sync Interval',
+  [ConfigKey.MaxBuildingLimitNum]: 'Max Building Limit Per Player',
+  [ConfigKey.ServerReplicatePawnCullDistance]: 'Server Replicate Pawn Cull Distance'
 };
 
 export const configTypes = {
@@ -363,7 +384,13 @@ export const configTypes = {
   bIsUseBackupSaveData: 'boolean',
   LogFormatType: 'string',
   SupplyDropSpan: 'number',
-  EnablePredatorBossPal: 'boolean',
+  bAllowGlobalPalboxExport: 'boolean',
+  bAllowGlobalPalboxImport: 'boolean',
+  bCharacterRecreateInHardcore: 'boolean',
+  bIsRandomizerPalLevelRandom: 'boolean',
+  CrossplayPlatforms: 'string',
+  EquipmentDurabilityDamageRate: 'number',
+  ItemContainerForceMarkDirtyInterval: 'number',
   MaxBuildingLimitNum: 'number',
   ServerReplicatePawnCullDistance: 'number'
 };
