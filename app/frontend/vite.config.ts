@@ -1,7 +1,7 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react-swc';
 import viteCompression from 'vite-plugin-compression';
-import wails from '../wails.json' assert { type: 'json' };
+import wails from '../wails.json' with { type: 'json' };
 
 // https://vitejs.dev/config/
 export default defineConfig({
