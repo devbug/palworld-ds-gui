@@ -3,43 +3,34 @@ import {
   Button,
   Divider,
   Input,
+  Select,
+  SelectItem,
   Switch,
   Card,
   CardBody,
-  CardHeader
+  CardHeader,
+  Tooltip
 } from '@nextui-org/react';
+import { IconRestore } from '@tabler/icons-react';
 import Layout from '../../components/layout';
 import useServerConfig from '../../hooks/use-server-config';
-import { configTypes, ConfigKey } from '../../types/server-config';
+import {
+  configTypes,
+  configDefaults,
+  configSelectOptions,
+  KNOWN_CROSSPLAY_PLATFORMS,
+  ConfigKey
+} from '../../types/server-config';
+import {
+  isConfigValueChanged,
+  parsePlatformList,
+  serializePlatformList
+} from '../../helpers/config-values';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import useServerSaveName from '../../hooks/use-server-save-name.ts';
-import { TGenericObject } from '../../types/index.ts';
 import { ServerAPI } from '../../server.ts';
 import { notifySuccess } from '../../actions/app.ts';
-
-const InputProvider = ({
-  label,
-  value,
-  type,
-  onChange,
-  onToggleSwitch,
-  ...rest
-}) => {
-  if (type === 'string' || type === 'number' || type === 'tuple') {
-    return <Input label={label} value={value} onChange={onChange} {...rest} />;
-  }
-
-  if (type === 'boolean') {
-    return (
-      <Switch isSelected={value} onChange={onToggleSwitch} {...rest}>
-        {label}
-      </Switch>
-    );
-  }
-
-  return null;
-};
 
 // 카테고리별 설정 키 (Palworld 1.0 기준)
 const configCategories: Record<string, ConfigKey[]> = {
@@ -203,16 +194,13 @@ const ServerSettings = () => {
   const [config, setConfig] = useState(currentConfig);
   const [saveName, setSaveName] = useState(currentSaveName);
   const [isSaving, setIsSaving] = useState(false);
-  const [errors, setErrors] = useState<TGenericObject>({});
+  const [saveNameError, setSaveNameError] = useState(false);
 
   const validate = () => {
     const saveNameRegex = /^[0-9a-fA-F]{32}$/;
 
     if (saveName && !saveNameRegex.test(saveName)) {
-      setErrors((prev) => ({
-        ...prev,
-        saveName: true
-      }));
+      setSaveNameError(true);
 
       return false;
     }
@@ -240,7 +228,150 @@ const ServerSettings = () => {
     setSaveName(currentSaveName);
   }, [currentConfig, currentSaveName]);
 
-  const renderConfigCategory = (categoryKey: string, configKeys: string[]) => {
+  const setConfigValue = (key: string, value: unknown) => {
+    setConfig((prev) => ({
+      ...prev,
+      [key]: value
+    }));
+  };
+
+  const renderConfigInput = (key: ConfigKey, isChanged: boolean) => {
+    const type = configTypes[key];
+    const value = config[key];
+    const label = t(`config.${key}`);
+    const options = configSelectOptions[key];
+
+    if (options) {
+      // 파일에 목록 밖의 값이 있으면(수동 편집 등) 선택지에 추가해 보존한다.
+      const currentValue = String(value ?? '');
+      const optionList =
+        currentValue && !options.includes(currentValue)
+          ? [...options, currentValue]
+          : options;
+
+      return (
+        <Select
+          label={label}
+          color={isChanged ? 'warning' : 'default'}
+          selectedKeys={[currentValue]}
+          disallowEmptySelection
+          onChange={(e) => {
+            if (e.target.value) setConfigValue(key, e.target.value);
+          }}
+        >
+          {optionList.map((option) => (
+            <SelectItem key={option} value={option}>
+              {t(`configOption.${key}.${option}`, option)}
+            </SelectItem>
+          ))}
+        </Select>
+      );
+    }
+
+    if (type === 'tuple') {
+      const selected = parsePlatformList(String(value ?? ''));
+      const platformList = Array.from(
+        new Set([...KNOWN_CROSSPLAY_PLATFORMS, ...selected])
+      );
+
+      return (
+        <Select
+          label={label}
+          color={isChanged ? 'warning' : 'default'}
+          selectionMode="multiple"
+          disallowEmptySelection
+          selectedKeys={new Set(selected)}
+          onSelectionChange={(keys) => {
+            if (keys === 'all') return;
+
+            setConfigValue(
+              key,
+              serializePlatformList(Array.from(keys) as string[])
+            );
+          }}
+        >
+          {platformList.map((platform) => (
+            <SelectItem key={platform} value={platform}>
+              {platform}
+            </SelectItem>
+          ))}
+        </Select>
+      );
+    }
+
+    if (type === 'boolean') {
+      return (
+        <Switch
+          name={key}
+          isSelected={!!value}
+          onChange={() => setConfigValue(key, !value)}
+        >
+          <span className={isChanged ? 'text-warning' : ''}>{label}</span>
+        </Switch>
+      );
+    }
+
+    return (
+      <Input
+        autoComplete="off"
+        name={key}
+        label={label}
+        color={isChanged ? 'warning' : 'default'}
+        value={String(value ?? '')}
+        onChange={(e) => setConfigValue(key, e.target.value)}
+      />
+    );
+  };
+
+  const renderConfigItem = (key: ConfigKey) => {
+    if (!config || !config.hasOwnProperty(key)) return null;
+
+    const isChanged = isConfigValueChanged(key, config[key]);
+    const defaultValue = configDefaults[key];
+    const displayDefault =
+      typeof defaultValue === 'boolean'
+        ? defaultValue
+          ? 'True'
+          : 'False'
+        : defaultValue === ''
+        ? t('serverSettings.emptyValue')
+        : String(defaultValue);
+
+    return (
+      <div key={key} className="flex items-center gap-1">
+        <Tooltip
+          content={t('serverSettings.defaultValue', { value: displayDefault })}
+          placement="top-start"
+          delay={400}
+          closeDelay={0}
+        >
+          <div className="flex-1 min-w-0">
+            {renderConfigInput(key, isChanged)}
+          </div>
+        </Tooltip>
+
+        <div className="w-8 shrink-0">
+          {isChanged && (
+            <Tooltip content={t('serverSettings.resetToDefault')}>
+              <Button
+                isIconOnly
+                size="sm"
+                variant="light"
+                onClick={() => setConfigValue(key, defaultValue)}
+              >
+                <IconRestore size="1rem" />
+              </Button>
+            </Tooltip>
+          )}
+        </div>
+      </div>
+    );
+  };
+
+  const renderConfigCategory = (
+    categoryKey: string,
+    configKeys: ConfigKey[]
+  ) => {
     return (
       <Card key={categoryKey} className="mb-4">
         <CardHeader>
@@ -250,39 +381,7 @@ const ServerSettings = () => {
         </CardHeader>
         <CardBody>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {configKeys.map((key) => {
-              if (!config || !config.hasOwnProperty(key)) return null;
-
-              return (
-                <InputProvider
-                  autocomplete="off"
-                  key={key}
-                  name={key}
-                  label={t(`config.${key}`)}
-                  value={config[key]}
-                  type={configTypes[key]}
-                  onChange={(e) => {
-                    setConfig((prev) => ({
-                      ...prev,
-                      [key]: e.target.value
-                    }));
-
-                    if (errors[key]) {
-                      setErrors((prev) => ({
-                        ...prev,
-                        [key]: ''
-                      }));
-                    }
-                  }}
-                  onToggleSwitch={() => {
-                    setConfig((prev) => ({
-                      ...prev,
-                      [key]: !config[key]
-                    }));
-                  }}
-                />
-              );
-            })}
+            {configKeys.map((key) => renderConfigItem(key))}
           </div>
         </CardBody>
       </Card>
@@ -314,12 +413,9 @@ const ServerSettings = () => {
               label={t('serverSettings.saveName')}
               name="saveName"
               value={saveName}
-              isInvalid={!!errors.saveName}
+              isInvalid={saveNameError}
               onChange={(e) => {
-                setErrors((prev) => ({
-                  ...prev,
-                  saveName: ''
-                }));
+                setSaveNameError(false);
                 setSaveName(e.target.value);
               }}
             />

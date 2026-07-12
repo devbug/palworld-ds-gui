@@ -1,5 +1,10 @@
 /* eslint-disable no-prototype-builtins */
-import { ConfigKey, TConfig, configTypes } from '../types/server-config';
+import {
+  ConfigKey,
+  TConfig,
+  configDefaults,
+  configTypes
+} from '../types/server-config';
 
 const OPTION_SETTINGS_MARKER = 'OptionSettings=(';
 
@@ -227,60 +232,6 @@ const keyOrder = [
   ConfigKey.SupplyDropSpan
 ];
 
-// 설정 파일에 없는 키에 주입할 기본값 (Palworld 1.0 DefaultPalWorldSettings.ini 기준).
-// 구버전 팰월드로 생성된 설정 파일을 열어도 1.0 신규 설정이 UI에 표시되게 한다.
-const defaultValues: Partial<TConfig> = {
-  [ConfigKey.bAllowGlobalPalboxExport]: true,
-  [ConfigKey.bAllowGlobalPalboxImport]: false,
-  [ConfigKey.bBuildAreaLimit]: false,
-  [ConfigKey.bCharacterRecreateInHardcore]: false,
-  [ConfigKey.bHardcore]: false,
-  [ConfigKey.bIsRandomizerPalLevelRandom]: false,
-  [ConfigKey.bPalLost]: false,
-  [ConfigKey.ChatPostLimitPerMinute]: 30,
-  [ConfigKey.CrossplayPlatforms]: '(Steam,Xbox,PS5,Mac)',
-  [ConfigKey.EquipmentDurabilityDamageRate]: 1.0,
-  [ConfigKey.ItemContainerForceMarkDirtyInterval]: 1.0,
-  [ConfigKey.ItemWeightRate]: 1.0,
-  [ConfigKey.MaxBuildingLimitNum]: 0,
-  [ConfigKey.RandomizerSeed]: '',
-  [ConfigKey.RandomizerType]: 'None',
-  [ConfigKey.ServerReplicatePawnCullDistance]: 15000,
-
-  // v1.0에서 추가된 설정들
-  [ConfigKey.PhysicsActiveDropItemMaxNum]: -1,
-  [ConfigKey.bEnableFastTravelOnlyBaseCamp]: false,
-  [ConfigKey.bAllowClientMod]: true,
-  [ConfigKey.bIsShowJoinLeftMessage]: true,
-  [ConfigKey.EnablePredatorBossPal]: true,
-  [ConfigKey.PlayerDataPalStorageUpdateCheckTickInterval]: 1.0,
-  [ConfigKey.ItemCorruptionMultiplier]: 1.0,
-  [ConfigKey.MonsterFarmActionSpeedRate]: 1.0,
-  [ConfigKey.DenyTechnologyList]: '',
-  [ConfigKey.GuildRejoinCooldownMinutes]: 0,
-  [ConfigKey.AutoTransferMasterCheckIntervalSeconds]: 3600,
-  [ConfigKey.AutoTransferMasterThresholdDays]: 14,
-  [ConfigKey.MaxGuildsPerFrame]: 10,
-  [ConfigKey.BlockRespawnTime]: 5,
-  [ConfigKey.RespawnPenaltyDurationThreshold]: 0,
-  [ConfigKey.RespawnPenaltyTimeScale]: 2,
-  [ConfigKey.bDisplayPvPItemNumOnWorldMap_BaseCamp]: false,
-  [ConfigKey.bDisplayPvPItemNumOnWorldMap_Player]: false,
-  [ConfigKey.AdditionalDropItemWhenPlayerKillingInPvPMode]: 'PlayerDropItem',
-  [ConfigKey.AdditionalDropItemNumWhenPlayerKillingInPvPMode]: 1,
-  [ConfigKey.bAdditionalDropItemWhenPlayerKillingInPvPMode]: false,
-  [ConfigKey.bEnableVoiceChat]: false,
-  [ConfigKey.VoiceChatMaxVolumeDistance]: 3000,
-  [ConfigKey.VoiceChatZeroVolumeDistance]: 15000,
-  [ConfigKey.bAllowEnhanceStat_Health]: true,
-  [ConfigKey.bAllowEnhanceStat_Attack]: true,
-  [ConfigKey.bAllowEnhanceStat_Stamina]: true,
-  [ConfigKey.bAllowEnhanceStat_Weight]: true,
-  [ConfigKey.bAllowEnhanceStat_WorkSpeed]: true,
-  [ConfigKey.bEnableBuildingPlayerUIdDisplay]: false,
-  [ConfigKey.BuildingNameDisplayCacheTTLSeconds]: 60
-};
-
 export const parseConfig = (config: string): TConfig => {
   const entries = splitTopLevelEntries(extractOptionSettings(config));
   const settings = {};
@@ -306,10 +257,11 @@ export const parseConfig = (config: string): TConfig => {
     }
   });
 
-  // 파일에 없는 설정에 기본값 주입
-  Object.keys(defaultValues).forEach((key) => {
+  // 파일에 없는 설정에 1.0 기본값 주입 — 구버전 팰월드로 생성된
+  // 설정 파일을 열어도 모든 설정이 UI에 표시되게 한다.
+  Object.keys(configDefaults).forEach((key) => {
     if (!settings.hasOwnProperty(key)) {
-      settings[key] = defaultValues[key];
+      settings[key] = configDefaults[key];
     }
   });
 

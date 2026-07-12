@@ -53,7 +53,33 @@ const en = {
     saveName: 'Save Name',
     saveNameEmptyHelp:
       'Save name is empty, which means you probably never joined the server. To change this value, you must first join the server once.',
-    saved: 'Game settings saved'
+    saved: 'Game settings saved',
+    defaultValue: 'Default: {{value}}',
+    resetToDefault: 'Reset to default',
+    emptyValue: '(empty)'
+  },
+  configOption: {
+    Difficulty: {
+      None: 'None',
+      Casual: 'Casual',
+      Normal: 'Normal',
+      Hard: 'Hard'
+    },
+    DeathPenalty: {
+      None: 'None',
+      Item: 'Item',
+      ItemAndEquipment: 'ItemAndEquipment',
+      All: 'All'
+    },
+    RandomizerType: {
+      None: 'None',
+      Region: 'Region',
+      All: 'All'
+    },
+    LogFormatType: {
+      Text: 'Text',
+      Json: 'Json'
+    }
   },
   configCategory: {
     serverBasic: 'Server',

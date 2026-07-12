@@ -54,7 +54,33 @@ const ko: typeof en = {
     saveName: '세이브 이름',
     saveNameEmptyHelp:
       '세이브 이름이 비어 있습니다. 아직 서버에 한 번도 접속하지 않았을 가능성이 높습니다. 이 값을 변경하려면 먼저 서버에 접속해야 합니다.',
-    saved: '게임 설정이 저장되었습니다'
+    saved: '게임 설정이 저장되었습니다',
+    defaultValue: '기본값: {{value}}',
+    resetToDefault: '기본값으로 되돌리기',
+    emptyValue: '(빈 값)'
+  },
+  configOption: {
+    Difficulty: {
+      None: '없음 (None)',
+      Casual: '캐주얼 (Casual)',
+      Normal: '보통 (Normal)',
+      Hard: '어려움 (Hard)'
+    },
+    DeathPenalty: {
+      None: '없음 (None)',
+      Item: '아이템 드롭 (Item)',
+      ItemAndEquipment: '아이템+장비 드롭 (ItemAndEquipment)',
+      All: '모두 드롭 (All)'
+    },
+    RandomizerType: {
+      None: '없음 (None)',
+      Region: '지역별 (Region)',
+      All: '전체 (All)'
+    },
+    LogFormatType: {
+      Text: '텍스트 (Text)',
+      Json: 'JSON (Json)'
+    }
   },
   configCategory: {
     serverBasic: '서버 기본 설정',
