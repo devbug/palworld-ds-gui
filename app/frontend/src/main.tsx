@@ -5,6 +5,7 @@ import { store } from './store';
 import { Provider } from 'react-redux';
 import { NextUIProvider } from '@nextui-org/react';
 import './main.css';
+import './i18n';
 import 'react-toastify/dist/ReactToastify.css';
 import ModalsProvider from './components/modals';
 import { BrowserRouter } from 'react-router-dom';

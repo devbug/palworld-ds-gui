@@ -1,5 +1,6 @@
 import { Input, Switch } from '@nextui-org/react';
 import { TGenericObject, TStopCountdownSettings } from '../../types';
+import { useTranslation } from 'react-i18next';
 
 type TStopCountdownSectionProps = {
   value: TStopCountdownSettings;
@@ -12,13 +13,17 @@ const StopCountdownSection = ({
   onChange,
   errors
 }: TStopCountdownSectionProps) => {
+  const { t } = useTranslation();
+
   return (
     <div className="flex flex-col gap-4">
       <div className="flex items-center gap-4">
         <div>
-          <p className="font-bold">Stop Countdown announcement</p>
+          <p className="font-bold">
+            {t('additionalSettings.stopCountdown.title')}
+          </p>
           <p className="text-sm text-neutral-500">
-            Announce server stop countdown message
+            {t('additionalSettings.stopCountdown.description')}
           </p>
         </div>
 
@@ -27,7 +32,7 @@ const StopCountdownSection = ({
             isSelected={value.enabled}
             onChange={() => onChange('enabled', Boolean(!value.enabled))}
           >
-            Enabled
+            {t('common.enabled')}
           </Switch>
         </div>
       </div>
@@ -35,7 +40,7 @@ const StopCountdownSection = ({
       <div className="flex justify-between items-center gap-4">
         <Input
           className="w-48"
-          label="Start At"
+          label={t('additionalSettings.stopCountdown.startAt')}
           isInvalid={!!errors.startat}
           isDisabled={!value.enabled}
           labelPlacement="outside"
@@ -44,7 +49,7 @@ const StopCountdownSection = ({
           step={1}
           placeholder="30"
           type="number"
-          endContent={<span className="text-sm">Seconds</span>}
+          endContent={<span className="text-sm">{t('common.seconds')}</span>}
           value={value.startat.toString()}
           onChange={(e) => onChange('startat', e.target.value)}
         />

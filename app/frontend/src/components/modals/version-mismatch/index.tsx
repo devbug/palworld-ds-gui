@@ -9,6 +9,7 @@ import {
 import { closeModals } from '../../../actions/modal';
 import useModalsInfo from '../../../hooks/use-modals-info';
 import { DesktopAPI } from '../../../desktop';
+import { useTranslation } from 'react-i18next';
 
 type TVersionMismatchModalProps = {
   clientVersion: string;
@@ -19,6 +20,7 @@ const VersionMismatchModal = ({
   clientVersion,
   serverVersion
 }: TVersionMismatchModalProps) => {
+  const { t } = useTranslation();
   const { isModalOpen } = useModalsInfo();
 
   return (
@@ -32,21 +34,21 @@ const VersionMismatchModal = ({
     >
       <ModalContent>
         <ModalHeader className="flex gap-1 items-center">
-          <p>Version Mismatch</p>
+          <p>{t('modals.versionMismatch.title')}</p>
         </ModalHeader>
         <ModalBody>
-          <p>
-            The server version is different from the client version. This may
-            cause issues. Please make sure the server and this app are up to
-            date.
-          </p>
+          <p>{t('modals.versionMismatch.body')}</p>
           <div className="flex flex-col">
             <div>
-              <span className="text-gray-500">Server version:</span>
+              <span className="text-gray-500">
+                {t('modals.versionMismatch.serverVersion')}
+              </span>
               <span className="ml-1">{serverVersion}</span>
             </div>
             <div>
-              <span className="text-gray-500">Client version:</span>
+              <span className="text-gray-500">
+                {t('modals.versionMismatch.clientVersion')}
+              </span>
               <span className="ml-1">{clientVersion}</span>
             </div>
           </div>
@@ -59,12 +61,12 @@ const VersionMismatchModal = ({
               )
             }
           >
-            Download latest versions here
+            {t('modals.versionMismatch.downloadLatest')}
           </span>
         </ModalBody>
         <ModalFooter className="justify-center">
           <Button variant="shadow" color="primary" onClick={closeModals}>
-            I understand
+            {t('modals.versionMismatch.understood')}
           </Button>
         </ModalFooter>
       </ModalContent>

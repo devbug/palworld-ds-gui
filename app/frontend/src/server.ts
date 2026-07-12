@@ -4,6 +4,7 @@ import { setConfig, setSaveName } from './actions/server';
 import { ConfigKey, TConfig } from './types/server-config';
 import { store } from './store';
 import { addSteamImage, notifyError, notifySuccess } from './actions/app';
+import i18n from './i18n';
 import { socketStateSelector } from './selectors/socket';
 import {
   onBackupListUpdated,
@@ -86,7 +87,7 @@ export const ServerAPI = {
         config: serializedConfig
       });
     } catch {
-      notifyError('Could not save config');
+      notifyError(i18n.t('toasts.configSaveFailed'));
     }
   },
   fetchSaveName: async () => {
@@ -100,7 +101,7 @@ export const ServerAPI = {
     try {
       await ServerAPI.send(SocketAction.WRITE_SAVE_NAME, { saveName });
     } catch {
-      notifyError('Could not save save name');
+      notifyError(i18n.t('toasts.saveNameSaveFailed'));
     }
   },
   start: async () => {
@@ -123,9 +124,9 @@ export const ServerAPI = {
   saveLaunchParams: async (launchParams: string) => {
     try {
       await ServerAPI.send(SocketAction.SAVE_LAUNCH_PARAMS, { launchParams });
-      notifySuccess('Launch params saved');
+      notifySuccess(i18n.t('toasts.launchParamsSaved'));
     } catch {
-      notifyError('Could not save launch params');
+      notifyError(i18n.t('toasts.launchParamsSaveFailed'));
     }
   },
   saveAdditionalSettings: async (newSettings: TAdditionalSettings) => {
@@ -134,9 +135,9 @@ export const ServerAPI = {
         newSettings
       });
 
-      notifySuccess('Additional settings saved');
+      notifySuccess(i18n.t('toasts.additionalSettingsSaved'));
     } catch {
-      notifyError('Could not save additional settings');
+      notifyError(i18n.t('toasts.additionalSettingsSaveFailed'));
     }
   },
   utils: {
@@ -158,17 +159,17 @@ export const ServerAPI = {
           interval,
           keepCount
         });
-        notifySuccess('Backups are now enabled');
+        notifySuccess(i18n.t('toasts.backupsEnabled'));
       } catch {
-        notifyError('Could not start backups');
+        notifyError(i18n.t('toasts.backupsEnableFailed'));
       }
     },
     stop: async () => {
       try {
         await ServerAPI.send(SocketAction.STOP_BACKUPS);
-        notifySuccess('Backups are now disabled');
+        notifySuccess(i18n.t('toasts.backupsDisabled'));
       } catch {
-        notifyError('Could not stop backups');
+        notifyError(i18n.t('toasts.backupsDisableFailed'));
       }
     },
     fetchCurrentSettings: async () => {
@@ -184,25 +185,25 @@ export const ServerAPI = {
     delete: async (backupFileName: string) => {
       try {
         await ServerAPI.send(SocketAction.DELETE_BACKUP, { backupFileName });
-        notifySuccess('Backup deleted');
+        notifySuccess(i18n.t('toasts.backupDeleted'));
       } catch {
-        notifyError('Could not delete backup');
+        notifyError(i18n.t('toasts.backupDeleteFailed'));
       }
     },
     create: async () => {
       try {
         await ServerAPI.send(SocketAction.CREATE_BACKUP);
-        notifySuccess('Backup created');
+        notifySuccess(i18n.t('toasts.backupCreated'));
       } catch {
-        notifyError('Could not create backup');
+        notifyError(i18n.t('toasts.backupCreateFailed'));
       }
     },
     restore: async (backupFileName: string) => {
       try {
         await ServerAPI.send(SocketAction.RESTORE_BACKUP, { backupFileName });
-        notifySuccess('Backup restored');
+        notifySuccess(i18n.t('toasts.backupRestored'));
       } catch {
-        notifyError('Could not restore backup');
+        notifyError(i18n.t('toasts.backupRestoreFailed'));
       }
     }
   },

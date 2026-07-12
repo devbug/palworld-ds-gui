@@ -1,8 +1,18 @@
-import { Button, Divider, Input, Switch, Card, CardBody, CardHeader } from '@nextui-org/react';
+/* eslint-disable no-prototype-builtins */
+import {
+  Button,
+  Divider,
+  Input,
+  Switch,
+  Card,
+  CardBody,
+  CardHeader
+} from '@nextui-org/react';
 import Layout from '../../components/layout';
 import useServerConfig from '../../hooks/use-server-config';
-import { configLabels, configTypes, ConfigKey } from '../../types/server-config';
+import { configTypes, ConfigKey } from '../../types/server-config';
 import { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import useServerSaveName from '../../hooks/use-server-save-name.ts';
 import { TGenericObject } from '../../types/index.ts';
 import { ServerAPI } from '../../server.ts';
@@ -16,17 +26,13 @@ const InputProvider = ({
   onToggleSwitch,
   ...rest
 }) => {
-  if (type === 'string' || type === 'number') {
+  if (type === 'string' || type === 'number' || type === 'tuple') {
     return <Input label={label} value={value} onChange={onChange} {...rest} />;
   }
 
   if (type === 'boolean') {
     return (
-      <Switch
-        isSelected={value}
-        onChange={onToggleSwitch}
-        {...rest}
-      >
+      <Switch isSelected={value} onChange={onToggleSwitch} {...rest}>
         {label}
       </Switch>
     );
@@ -35,9 +41,9 @@ const InputProvider = ({
   return null;
 };
 
-// 설정 카테고리 정의
-const configCategories = {
-  '서버 기본 설정': [
+// 카테고리별 설정 키 (Palworld 1.0 기준)
+const configCategories: Record<string, ConfigKey[]> = {
+  serverBasic: [
     ConfigKey.ServerName,
     ConfigKey.ServerDescription,
     ConfigKey.ServerPassword,
@@ -52,8 +58,10 @@ const configCategories = {
     ConfigKey.Region,
     ConfigKey.bUseAuth,
     ConfigKey.BanListURL,
+    ConfigKey.bAllowClientMod,
+    ConfigKey.bIsShowJoinLeftMessage
   ],
-  '게임플레이 설정': [
+  gameplay: [
     ConfigKey.Difficulty,
     ConfigKey.ExpRate,
     ConfigKey.PalCaptureRate,
@@ -61,29 +69,30 @@ const configCategories = {
     ConfigKey.WorkSpeedRate,
     ConfigKey.DayTimeSpeedRate,
     ConfigKey.NightTimeSpeedRate,
-    ConfigKey.AutoSaveSpan,
+    ConfigKey.AutoSaveSpan
   ],
-  '데미지 설정': [
+  damage: [
     ConfigKey.PalDamageRateAttack,
     ConfigKey.PalDamageRateDefense,
     ConfigKey.PlayerDamageRateAttack,
     ConfigKey.PlayerDamageRateDefense,
+    ConfigKey.BuildObjectHpRate,
     ConfigKey.BuildObjectDamageRate,
     ConfigKey.BuildObjectDeteriorationDamageRate,
-    ConfigKey.EquipmentDurabilityDamageRate,
+    ConfigKey.EquipmentDurabilityDamageRate
   ],
-  '생존 설정': [
-    ConfigKey.PlayerStomachDecreaseRate,
-    ConfigKey.PlayerStaminaDecreaseRate,
+  survival: [
+    ConfigKey.PlayerStomachDecreaceRate,
+    ConfigKey.PlayerStaminaDecreaceRate,
     ConfigKey.PlayerAutoHPRegeneRate,
     ConfigKey.PlayerAutoHpRegeneRateInSleep,
-    ConfigKey.PalStomachDecreaseRate,
-    ConfigKey.PalStaminaDecreaseRate,
+    ConfigKey.PalStomachDecreaceRate,
+    ConfigKey.PalStaminaDecreaceRate,
     ConfigKey.PalAutoHPRegeneRate,
     ConfigKey.PalAutoHpRegeneRateInSleep,
-    ConfigKey.DeathPenalty,
+    ConfigKey.DeathPenalty
   ],
-  '아이템 설정': [
+  items: [
     ConfigKey.CollectionDropRate,
     ConfigKey.CollectionObjectHpRate,
     ConfigKey.CollectionObjectRespawnSpeedRate,
@@ -91,52 +100,89 @@ const configCategories = {
     ConfigKey.DropItemMaxNum,
     ConfigKey.DropItemAliveMaxHours,
     ConfigKey.ItemWeightRate,
-    ConfigKey.ItemContainerForceMarkDirtyInterval,
+    ConfigKey.ItemCorruptionMultiplier,
+    ConfigKey.PhysicsActiveDropItemMaxNum
   ],
-  '베이스캠프 설정': [
+  baseCamp: [
     ConfigKey.BaseCampMaxNum,
     ConfigKey.BaseCampWorkerMaxNum,
     ConfigKey.BaseCampMaxNumInGuild,
     ConfigKey.MaxBuildingLimitNum,
+    ConfigKey.bEnableBuildingPlayerUIdDisplay
   ],
-  '길드 설정': [
+  guild: [
     ConfigKey.GuildPlayerMaxNum,
     ConfigKey.bAutoResetGuildNoOnlinePlayers,
     ConfigKey.AutoResetGuildTimeNoOnlinePlayers,
+    ConfigKey.GuildRejoinCooldownMinutes,
+    ConfigKey.AutoTransferMasterCheckIntervalSeconds,
+    ConfigKey.AutoTransferMasterThresholdDays
   ],
-  '플레이어 설정': [
+  player: [
     ConfigKey.CoopPlayerMaxNum,
     ConfigKey.bEnablePlayerToPlayerDamage,
     ConfigKey.bEnableFriendlyFire,
-    ConfigKey.bCanPickupOtherGuildDeathPenaltyDrop,
+    ConfigKey.bCanPickupOtherGuildDeathPenaltyDrop
   ],
-  '게임 모드 설정': [
+  gameMode: [
     ConfigKey.bIsMultiplay,
     ConfigKey.bIsPvP,
     ConfigKey.bHardcore,
     ConfigKey.bPalLost,
-    ConfigKey.bCharacterRecreateInHardcore,
+    ConfigKey.bCharacterRecreateInHardcore
   ],
-  '기능 설정': [
+  pvp: [
+    ConfigKey.bDisplayPvPItemNumOnWorldMap_BaseCamp,
+    ConfigKey.bDisplayPvPItemNumOnWorldMap_Player,
+    ConfigKey.bAdditionalDropItemWhenPlayerKillingInPvPMode,
+    ConfigKey.AdditionalDropItemWhenPlayerKillingInPvPMode,
+    ConfigKey.AdditionalDropItemNumWhenPlayerKillingInPvPMode,
+    ConfigKey.BlockRespawnTime,
+    ConfigKey.RespawnPenaltyDurationThreshold,
+    ConfigKey.RespawnPenaltyTimeScale
+  ],
+  features: [
     ConfigKey.bEnableFastTravel,
+    ConfigKey.bEnableFastTravelOnlyBaseCamp,
     ConfigKey.bEnableInvaderEnemy,
+    ConfigKey.EnablePredatorBossPal,
     ConfigKey.bEnableNonLoginPenalty,
     ConfigKey.bIsStartLocationSelectByMap,
     ConfigKey.bExistPlayerAfterLogout,
     ConfigKey.bEnableDefenseOtherGuildPlayer,
     ConfigKey.bInvisibleOtherGuildBaseCampAreaFX,
     ConfigKey.bShowPlayerList,
-    ConfigKey.bIsUseBackupSaveData,
+    ConfigKey.bIsUseBackupSaveData
   ],
-  '팰 설정': [
+  statEnhance: [
+    ConfigKey.bAllowEnhanceStat_Health,
+    ConfigKey.bAllowEnhanceStat_Attack,
+    ConfigKey.bAllowEnhanceStat_Stamina,
+    ConfigKey.bAllowEnhanceStat_Weight,
+    ConfigKey.bAllowEnhanceStat_WorkSpeed
+  ],
+  voiceChat: [
+    ConfigKey.bEnableVoiceChat,
+    ConfigKey.VoiceChatMaxVolumeDistance,
+    ConfigKey.VoiceChatZeroVolumeDistance
+  ],
+  pals: [
     ConfigKey.PalEggDefaultHatchingTime,
+    ConfigKey.MonsterFarmActionSpeedRate,
     ConfigKey.bAllowGlobalPalboxExport,
     ConfigKey.bAllowGlobalPalboxImport,
     ConfigKey.bIsRandomizerPalLevelRandom,
     ConfigKey.RandomizerSeed,
-    ConfigKey.RandomizerType,
+    ConfigKey.RandomizerType
   ],
-  '기타 설정': [
+  performance: [
+    ConfigKey.ServerReplicatePawnCullDistance,
+    ConfigKey.MaxGuildsPerFrame,
+    ConfigKey.ItemContainerForceMarkDirtyInterval,
+    ConfigKey.PlayerDataPalStorageUpdateCheckTickInterval,
+    ConfigKey.BuildingNameDisplayCacheTTLSeconds
+  ],
+  misc: [
     ConfigKey.bActiveUNKO,
     ConfigKey.DropItemMaxNum_UNKO,
     ConfigKey.bEnableAimAssistPad,
@@ -144,14 +190,14 @@ const configCategories = {
     ConfigKey.bBuildAreaLimit,
     ConfigKey.ChatPostLimitPerMinute,
     ConfigKey.CrossplayPlatforms,
-    ConfigKey.AllowConnectPlatform,
+    ConfigKey.DenyTechnologyList,
     ConfigKey.LogFormatType,
-    ConfigKey.SupplyDropSpan,
-    ConfigKey.ServerReplicatePawnCullDistance,
-  ],
+    ConfigKey.SupplyDropSpan
+  ]
 };
 
 const ServerSettings = () => {
+  const { t } = useTranslation();
   const currentConfig = useServerConfig();
   const currentSaveName = useServerSaveName();
   const [config, setConfig] = useState(currentConfig);
@@ -185,7 +231,7 @@ const ServerSettings = () => {
     }
 
     setIsSaving(false);
-    notifySuccess('Game settings saved');
+    notifySuccess(t('serverSettings.saved'));
   };
 
   useEffect(() => {
@@ -194,23 +240,25 @@ const ServerSettings = () => {
     setSaveName(currentSaveName);
   }, [currentConfig, currentSaveName]);
 
-  const renderConfigCategory = (categoryName: string, configKeys: string[]) => {
+  const renderConfigCategory = (categoryKey: string, configKeys: string[]) => {
     return (
-      <Card key={categoryName} className="mb-4">
+      <Card key={categoryKey} className="mb-4">
         <CardHeader>
-          <h3 className="text-lg font-semibold">{categoryName}</h3>
+          <h3 className="text-lg font-semibold">
+            {t(`configCategory.${categoryKey}`)}
+          </h3>
         </CardHeader>
         <CardBody>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {configKeys.map((key) => {
               if (!config || !config.hasOwnProperty(key)) return null;
-              
+
               return (
                 <InputProvider
                   autocomplete="off"
                   key={key}
                   name={key}
-                  label={configLabels[key]}
+                  label={t(`config.${key}`)}
                   value={config[key]}
                   type={configTypes[key]}
                   onChange={(e) => {
@@ -244,23 +292,26 @@ const ServerSettings = () => {
   return (
     <Layout
       className="relative flex flex-col gap-4"
-      title="Game Settings"
-      subtitle="Server must be restarted for changes to take effect"
+      title={t('serverSettings.title')}
+      subtitle={t('serverSettings.subtitle')}
     >
       <div className="flex flex-col gap-4 mb-8">
-        {config && Object.keys(configCategories).map((categoryName) =>
-          renderConfigCategory(categoryName, configCategories[categoryName])
-        )}
+        {config &&
+          Object.keys(configCategories).map((categoryKey) =>
+            renderConfigCategory(categoryKey, configCategories[categoryKey])
+          )}
 
         <Divider className="mt-4 mb-4" />
 
         <Card>
           <CardHeader>
-            <h3 className="text-lg font-semibold">세이브 설정</h3>
+            <h3 className="text-lg font-semibold">
+              {t('serverSettings.saveSection')}
+            </h3>
           </CardHeader>
           <CardBody>
             <Input
-              label="Save Name"
+              label={t('serverSettings.saveName')}
               name="saveName"
               value={saveName}
               isInvalid={!!errors.saveName}
@@ -275,8 +326,7 @@ const ServerSettings = () => {
 
             {!currentSaveName && (
               <p className="text-danger-300 text-xs mt-2">
-                Save name is empty, which means you probably never joined the
-                server. To change this value, you must first join the server once.
+                {t('serverSettings.saveNameEmptyHelp')}
               </p>
             )}
           </CardBody>
@@ -290,7 +340,7 @@ const ServerSettings = () => {
           onClick={onSaveClick}
           isLoading={isSaving}
         >
-          Save
+          {t('common.save')}
         </Button>
       </div>
     </Layout>

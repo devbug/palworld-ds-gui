@@ -37,24 +37,26 @@ import useBackupsList from '../../hooks/use-backups-list';
 import useBackupSettings from '../../hooks/use-backup-settings';
 import useServerCredentials from '../../hooks/use-server-credentials';
 import { DesktopAPI } from '../../desktop';
+import { useTranslation } from 'react-i18next';
+import i18n from '../../i18n';
 
-const columns = [
+const getColumns = () => [
   {
     key: 'save',
-    label: 'Save Name',
+    label: i18n.t('backups.columns.save'),
     width: 64
   },
   {
     key: 'date',
-    label: 'Date'
+    label: i18n.t('backups.columns.date')
   },
   {
     key: 'size',
-    label: 'Size'
+    label: i18n.t('backups.columns.size')
   },
   {
     key: 'actions',
-    label: 'Actions',
+    label: i18n.t('backups.columns.actions'),
     width: 64
   }
 ];
@@ -64,15 +66,15 @@ type TBackupActionsProps = {
 };
 
 const BackupActions = ({ backup }: TBackupActionsProps) => {
+  const { t } = useTranslation();
   const [downloading, setDownloading] = useState<boolean>(false);
   const serverCredentials = useServerCredentials();
 
   const onRestoreClick = async () => {
     await requestConfirmation({
-      title: 'Confirmation',
-      message:
-        'Are you sure you want to restore this backup? This action is irreversible. Make sure you have a backup of your current save.',
-      confirmLabel: 'Restore',
+      title: t('admin.confirmation'),
+      message: t('backups.restoreConfirm'),
+      confirmLabel: t('backups.restore'),
       onConfirm: async () => {
         await ServerAPI.backups.restore(backup.originalName);
       }
@@ -81,10 +83,9 @@ const BackupActions = ({ backup }: TBackupActionsProps) => {
 
   const onDeleteClick = async () => {
     await requestConfirmation({
-      title: 'Confirmation',
-      message:
-        'Are you sure you want to delete this backup? This action is irreversible.',
-      confirmLabel: 'Delete',
+      title: t('admin.confirmation'),
+      message: t('backups.deleteConfirm'),
+      confirmLabel: t('common.delete'),
       variant: 'danger',
       onConfirm: async () => {
         await ServerAPI.backups.delete(backup.originalName);
@@ -99,7 +100,7 @@ const BackupActions = ({ backup }: TBackupActionsProps) => {
       new Promise((resolve) => setTimeout(resolve, ms));
 
     try {
-      notifySuccess('Backup download started.');
+      notifySuccess(t('backups.downloadStarted'));
 
       await sleep(5000);
 
@@ -110,7 +111,7 @@ const BackupActions = ({ backup }: TBackupActionsProps) => {
       );
     } catch (error) {
       DesktopAPI.logToFile(`Backup download failed: ${error?.toString()}`);
-      notifyError('Backup download failed.');
+      notifyError(t('backups.downloadFailed'));
     } finally {
       setDownloading(false);
     }
@@ -130,14 +131,16 @@ const BackupActions = ({ backup }: TBackupActionsProps) => {
           onClick={onDownloadClick}
           isDisabled={downloading}
         >
-          {downloading ? 'A download is in progress...' : 'Download'}
+          {downloading
+            ? t('backups.downloadInProgress')
+            : t('backups.download')}
         </DropdownItem>
         <DropdownItem
           key="restore"
           endContent={<IconRestore size="1.0rem" />}
           onClick={onRestoreClick}
         >
-          Restore
+          {t('backups.restore')}
         </DropdownItem>
         <DropdownItem
           key="delete"
@@ -146,7 +149,7 @@ const BackupActions = ({ backup }: TBackupActionsProps) => {
           endContent={<IconTrash size="1.0rem" />}
           onClick={onDeleteClick}
         >
-          Delete backup
+          {t('backups.deleteBackup')}
         </DropdownItem>
       </DropdownMenu>
     </Dropdown>
@@ -154,6 +157,7 @@ const BackupActions = ({ backup }: TBackupActionsProps) => {
 };
 
 const Backups = () => {
+  const { t } = useTranslation();
   const currentBackupSettings = useBackupSettings();
   const backups = useBackupsList();
   const [isCreating, setIsCreating] = useState<boolean>(false);
@@ -238,8 +242,8 @@ const Backups = () => {
   return (
     <Layout
       className="relative flex flex-col gap-4"
-      title="Backups"
-      subtitle="Manage your backups"
+      title={t('backups.title')}
+      subtitle={t('backups.subtitle')}
       rightSlot={
         <Button
           variant="shadow"
@@ -248,13 +252,13 @@ const Backups = () => {
           onClick={onCreateBackupClick}
           endContent={<IconArchive size="1.0rem" />}
         >
-          Create new backup now
+          {t('backups.createNow')}
         </Button>
       }
     >
       <div className="flex items-center gap-4">
         <Input
-          label="Interval"
+          label={t('backups.interval')}
           isInvalid={!!errors.interval}
           isDisabled={!settings.enabled}
           labelPlacement="outside"
@@ -263,19 +267,21 @@ const Backups = () => {
           step={0.1}
           placeholder="1"
           type="number"
-          endContent={<span className="text-sm">Hours</span>}
+          endContent={<span className="text-sm">{t('common.hours')}</span>}
           value={settings.interval}
           onChange={(e) => onSettingsChange('interval', e.target.value)}
         />
 
         <Input
-          label="Keep"
+          label={t('backups.keep')}
           isInvalid={!!errors.keepCount}
           isDisabled={!settings.enabled}
           labelPlacement="outside"
           placeholder="6"
           type="number"
-          endContent={<span className="text-sm">Backups</span>}
+          endContent={
+            <span className="text-sm">{t('backups.backupsUnit')}</span>
+          }
           value={settings.keepCount}
           onChange={(e) =>
             onSettingsChange('keepCount', parseInt(e.target.value))
@@ -289,7 +295,7 @@ const Backups = () => {
               onSettingsChange('enabled', Boolean(!settings.enabled))
             }
           >
-            Enabled
+            {t('common.enabled')}
           </Switch>
 
           <Button
@@ -299,13 +305,13 @@ const Backups = () => {
             onClick={onSaveSettingsClick}
             endContent={<IconDeviceFloppy size="1.0rem" />}
           >
-            Save
+            {t('common.save')}
           </Button>
         </div>
       </div>
 
       <Table className="max-h-[326px]">
-        <TableHeader columns={columns}>
+        <TableHeader columns={getColumns()}>
           {(column) => <TableColumn {...column}>{column.label}</TableColumn>}
         </TableHeader>
         <TableBody

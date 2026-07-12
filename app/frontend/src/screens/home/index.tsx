@@ -19,17 +19,19 @@ import useLaunchParams from '../../hooks/use-launch-params';
 import { setLaunchParams } from '../../actions/app';
 import { ServerAPI } from '../../server';
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
-const statusDict = {
-  [ServerStatus.STARTED]: 'Server is running',
-  [ServerStatus.STARTING]: 'Starting...',
-  [ServerStatus.STOPPED]: 'Server is stopped',
-  [ServerStatus.STOPPING]: 'Stopping...',
-  [ServerStatus.RESTARTING]: 'Restarting...',
-  [ServerStatus.UPDATING]: 'Updating...'
+const statusKeyDict = {
+  [ServerStatus.STARTED]: 'home.status.started',
+  [ServerStatus.STARTING]: 'home.status.starting',
+  [ServerStatus.STOPPED]: 'home.status.stopped',
+  [ServerStatus.STOPPING]: 'home.status.stopping',
+  [ServerStatus.RESTARTING]: 'home.status.restarting',
+  [ServerStatus.UPDATING]: 'home.status.updating'
 };
 
 const Home = () => {
+  const { t } = useTranslation();
   const currentConfig = useServerConfig();
   const status = useServerStatus();
   const consoleEntries = useConsolesById();
@@ -55,7 +57,7 @@ const Home = () => {
     <Layout
       className="flex flex-col gap-4"
       title={currentConfig[ConfigKey.ServerName]}
-      subtitle={statusDict[status]}
+      subtitle={t(statusKeyDict[status])}
     >
       <div className="flex gap-2">
         <Button
@@ -66,7 +68,7 @@ const Home = () => {
           isDisabled={startDisabled}
           variant="shadow"
         >
-          Start
+          {t('home.start')}
         </Button>
 
         <Button
@@ -77,7 +79,7 @@ const Home = () => {
           isDisabled={stopDisabled}
           variant="shadow"
         >
-          Stop
+          {t('home.stop')}
         </Button>
 
         <Button
@@ -88,7 +90,7 @@ const Home = () => {
           isDisabled={restartDisabled}
           variant="shadow"
         >
-          Restart
+          {t('home.restart')}
         </Button>
 
         <Button
@@ -96,19 +98,18 @@ const Home = () => {
           color="secondary"
           onClick={async () => {
             await requestConfirmation({
-              title: 'Are you sure you want to update the server?',
+              title: t('home.updateConfirmTitle'),
               message: (
                 <>
                   <p>
-                    This will stop the server and update it to the latest
-                    version.{' '}
+                    {t('home.updateConfirmBody')}{' '}
                     <span className="font-bold">
-                      Make sure to backup your server first
+                      {t('home.updateConfirmBackupWarning')}
                     </span>
-                    , new updates may introduce breaking changes.
+                    {t('home.updateConfirmBreakingChanges')}
                   </p>
                   <p>
-                    Update notes should be available here:{' '}
+                    {t('home.updateNotesAvailable')}{' '}
                     <span
                       className="text-blue-500 hover:underline cursor-pointer"
                       onClick={() =>
@@ -122,8 +123,8 @@ const Home = () => {
                   </p>
                 </>
               ),
-              cancelLabel: 'Cancel',
-              confirmLabel: 'Update',
+              cancelLabel: t('common.cancel'),
+              confirmLabel: t('home.update'),
               onConfirm: ServerAPI.update
             });
           }}
@@ -131,18 +132,18 @@ const Home = () => {
           isDisabled={updateDisabled}
           variant="shadow"
         >
-          Update Server
+          {t('home.updateServer')}
         </Button>
       </div>
 
       <div className="flex gap-2 items-center">
         <Input
           size="sm"
-          label="Launch params"
+          label={t('home.launchParams')}
           value={launchParams}
           onChange={onLaunchParamsChange}
         />
-        <Tooltip content="Save launch params">
+        <Tooltip content={t('home.saveLaunchParams')}>
           <Button
             isIconOnly
             color="primary"

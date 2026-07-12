@@ -1,5 +1,6 @@
 import { Switch } from '@nextui-org/react';
 import { TRestartOnCrashSettings } from '../../types';
+import { useTranslation } from 'react-i18next';
 
 type TRestartOnCrashSectionProps = {
   value: TRestartOnCrashSettings;
@@ -10,13 +11,17 @@ const RestartOnCrashSection = ({
   value,
   onChange
 }: TRestartOnCrashSectionProps) => {
+  const { t } = useTranslation();
+
   return (
     <div className="flex flex-col gap-4">
       <div className="flex items-center gap-4">
         <div>
-          <p className="font-bold">Restart on crash</p>
+          <p className="font-bold">
+            {t('additionalSettings.restartOnCrash.title')}
+          </p>
           <p className="text-sm text-neutral-500">
-            Automatically restart the server if it crashes
+            {t('additionalSettings.restartOnCrash.description')}
           </p>
         </div>
 
@@ -25,7 +30,7 @@ const RestartOnCrashSection = ({
             isSelected={value.enabled}
             onChange={() => onChange('enabled', Boolean(!value.enabled))}
           >
-            Enabled
+            {t('common.enabled')}
           </Switch>
         </div>
       </div>

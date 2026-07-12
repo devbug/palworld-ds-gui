@@ -2,6 +2,7 @@ export enum ConfigKey {
   Difficulty = 'Difficulty',
   RandomizerType = 'RandomizerType',
   RandomizerSeed = 'RandomizerSeed',
+  bIsRandomizerPalLevelRandom = 'bIsRandomizerPalLevelRandom',
   DayTimeSpeedRate = 'DayTimeSpeedRate',
   NightTimeSpeedRate = 'NightTimeSpeedRate',
   ExpRate = 'ExpRate',
@@ -11,12 +12,12 @@ export enum ConfigKey {
   PalDamageRateDefense = 'PalDamageRateDefense',
   PlayerDamageRateAttack = 'PlayerDamageRateAttack',
   PlayerDamageRateDefense = 'PlayerDamageRateDefense',
-  PlayerStomachDecreaseRate = 'PlayerStomachDecreaseRate',
-  PlayerStaminaDecreaseRate = 'PlayerStaminaDecreaseRate',
+  PlayerStomachDecreaceRate = 'PlayerStomachDecreaceRate',
+  PlayerStaminaDecreaceRate = 'PlayerStaminaDecreaceRate',
   PlayerAutoHPRegeneRate = 'PlayerAutoHPRegeneRate',
   PlayerAutoHpRegeneRateInSleep = 'PlayerAutoHpRegeneRateInSleep',
-  PalStomachDecreaseRate = 'PalStomachDecreaseRate',
-  PalStaminaDecreaseRate = 'PalStaminaDecreaseRate',
+  PalStomachDecreaceRate = 'PalStomachDecreaceRate',
+  PalStaminaDecreaceRate = 'PalStaminaDecreaceRate',
   PalAutoHPRegeneRate = 'PalAutoHPRegeneRate',
   PalAutoHpRegeneRateInSleep = 'PalAutoHpRegeneRateInSleep',
   BuildObjectHpRate = 'BuildObjectHpRate',
@@ -49,6 +50,7 @@ export enum ConfigKey {
   bIsPvP = 'bIsPvP',
   bHardcore = 'bHardcore',
   bPalLost = 'bPalLost',
+  bCharacterRecreateInHardcore = 'bCharacterRecreateInHardcore',
   bCanPickupOtherGuildDeathPenaltyDrop = 'bCanPickupOtherGuildDeathPenaltyDrop',
   bEnableNonLoginPenalty = 'bEnableNonLoginPenalty',
   bEnableFastTravel = 'bEnableFastTravel',
@@ -71,35 +73,64 @@ export enum ConfigKey {
   Region = 'Region',
   bUseAuth = 'bUseAuth',
   BanListURL = 'BanListURL',
-  PalStaminaDecreaceRate = 'PalStaminaDecreaceRate',
-  PalStomachDecreaceRate = 'PalStomachDecreaceRate',
-  PlayerStaminaDecreaceRate = 'PlayerStaminaDecreaceRate',
-  PlayerStomachDecreaceRate = 'PlayerStomachDecreaceRate',
   RESTAPIEnabled = 'RESTAPIEnabled',
   RESTAPIPort = 'RESTAPIPort',
   bShowPlayerList = 'bShowPlayerList',
   ChatPostLimitPerMinute = 'ChatPostLimitPerMinute',
-  AllowConnectPlatform = 'AllowConnectPlatform',
+  CrossplayPlatforms = 'CrossplayPlatforms',
   bIsUseBackupSaveData = 'bIsUseBackupSaveData',
   LogFormatType = 'LogFormatType',
   SupplyDropSpan = 'SupplyDropSpan',
-  
-  // 🔥 v0.6.0 새로 추가된 설정들
+
+  // v0.6.0에서 추가된 설정들
   bAllowGlobalPalboxExport = 'bAllowGlobalPalboxExport',
   bAllowGlobalPalboxImport = 'bAllowGlobalPalboxImport',
-  bCharacterRecreateInHardcore = 'bCharacterRecreateInHardcore',
-  bIsRandomizerPalLevelRandom = 'bIsRandomizerPalLevelRandom',
-  CrossplayPlatforms = 'CrossplayPlatforms',
   EquipmentDurabilityDamageRate = 'EquipmentDurabilityDamageRate',
   ItemContainerForceMarkDirtyInterval = 'ItemContainerForceMarkDirtyInterval',
   MaxBuildingLimitNum = 'MaxBuildingLimitNum',
-  ServerReplicatePawnCullDistance = 'ServerReplicatePawnCullDistance'
+  ServerReplicatePawnCullDistance = 'ServerReplicatePawnCullDistance',
+
+  // v1.0에서 추가된 설정들
+  PhysicsActiveDropItemMaxNum = 'PhysicsActiveDropItemMaxNum',
+  bEnableFastTravelOnlyBaseCamp = 'bEnableFastTravelOnlyBaseCamp',
+  bAllowClientMod = 'bAllowClientMod',
+  bIsShowJoinLeftMessage = 'bIsShowJoinLeftMessage',
+  EnablePredatorBossPal = 'EnablePredatorBossPal',
+  PlayerDataPalStorageUpdateCheckTickInterval = 'PlayerDataPalStorageUpdateCheckTickInterval',
+  ItemCorruptionMultiplier = 'ItemCorruptionMultiplier',
+  MonsterFarmActionSpeedRate = 'MonsterFarmActionSpeedRate',
+  DenyTechnologyList = 'DenyTechnologyList',
+  GuildRejoinCooldownMinutes = 'GuildRejoinCooldownMinutes',
+  AutoTransferMasterCheckIntervalSeconds = 'AutoTransferMasterCheckIntervalSeconds',
+  AutoTransferMasterThresholdDays = 'AutoTransferMasterThresholdDays',
+  MaxGuildsPerFrame = 'MaxGuildsPerFrame',
+  BlockRespawnTime = 'BlockRespawnTime',
+  RespawnPenaltyDurationThreshold = 'RespawnPenaltyDurationThreshold',
+  RespawnPenaltyTimeScale = 'RespawnPenaltyTimeScale',
+  bDisplayPvPItemNumOnWorldMap_BaseCamp = 'bDisplayPvPItemNumOnWorldMap_BaseCamp',
+  bDisplayPvPItemNumOnWorldMap_Player = 'bDisplayPvPItemNumOnWorldMap_Player',
+  AdditionalDropItemWhenPlayerKillingInPvPMode = 'AdditionalDropItemWhenPlayerKillingInPvPMode',
+  AdditionalDropItemNumWhenPlayerKillingInPvPMode = 'AdditionalDropItemNumWhenPlayerKillingInPvPMode',
+  bAdditionalDropItemWhenPlayerKillingInPvPMode = 'bAdditionalDropItemWhenPlayerKillingInPvPMode',
+  bEnableVoiceChat = 'bEnableVoiceChat',
+  VoiceChatMaxVolumeDistance = 'VoiceChatMaxVolumeDistance',
+  VoiceChatZeroVolumeDistance = 'VoiceChatZeroVolumeDistance',
+  bAllowEnhanceStat_Health = 'bAllowEnhanceStat_Health',
+  bAllowEnhanceStat_Attack = 'bAllowEnhanceStat_Attack',
+  bAllowEnhanceStat_Stamina = 'bAllowEnhanceStat_Stamina',
+  bAllowEnhanceStat_Weight = 'bAllowEnhanceStat_Weight',
+  bAllowEnhanceStat_WorkSpeed = 'bAllowEnhanceStat_WorkSpeed',
+  bEnableBuildingPlayerUIdDisplay = 'bEnableBuildingPlayerUIdDisplay',
+  BuildingNameDisplayCacheTTLSeconds = 'BuildingNameDisplayCacheTTLSeconds'
 }
+
+export type TConfigValueType = 'string' | 'number' | 'boolean' | 'tuple';
 
 export type TConfig = {
   [ConfigKey.Difficulty]: string;
   [ConfigKey.RandomizerType]: string;
   [ConfigKey.RandomizerSeed]: string;
+  [ConfigKey.bIsRandomizerPalLevelRandom]: boolean;
   [ConfigKey.DayTimeSpeedRate]: number;
   [ConfigKey.NightTimeSpeedRate]: number;
   [ConfigKey.ExpRate]: number;
@@ -109,12 +140,12 @@ export type TConfig = {
   [ConfigKey.PalDamageRateDefense]: number;
   [ConfigKey.PlayerDamageRateAttack]: number;
   [ConfigKey.PlayerDamageRateDefense]: number;
-  [ConfigKey.PlayerStomachDecreaseRate]: number;
-  [ConfigKey.PlayerStaminaDecreaseRate]: number;
+  [ConfigKey.PlayerStomachDecreaceRate]: number;
+  [ConfigKey.PlayerStaminaDecreaceRate]: number;
   [ConfigKey.PlayerAutoHPRegeneRate]: number;
   [ConfigKey.PlayerAutoHpRegeneRateInSleep]: number;
-  [ConfigKey.PalStomachDecreaseRate]: number;
-  [ConfigKey.PalStaminaDecreaseRate]: number;
+  [ConfigKey.PalStomachDecreaceRate]: number;
+  [ConfigKey.PalStaminaDecreaceRate]: number;
   [ConfigKey.PalAutoHPRegeneRate]: number;
   [ConfigKey.PalAutoHpRegeneRateInSleep]: number;
   [ConfigKey.BuildObjectHpRate]: number;
@@ -147,6 +178,7 @@ export type TConfig = {
   [ConfigKey.bIsPvP]: boolean;
   [ConfigKey.bHardcore]: boolean;
   [ConfigKey.bPalLost]: boolean;
+  [ConfigKey.bCharacterRecreateInHardcore]: boolean;
   [ConfigKey.bCanPickupOtherGuildDeathPenaltyDrop]: boolean;
   [ConfigKey.bEnableNonLoginPenalty]: boolean;
   [ConfigKey.bEnableFastTravel]: boolean;
@@ -169,140 +201,58 @@ export type TConfig = {
   [ConfigKey.Region]: string;
   [ConfigKey.bUseAuth]: boolean;
   [ConfigKey.BanListURL]: string;
-  [ConfigKey.PalStaminaDecreaceRate]: number;
-  [ConfigKey.PalStomachDecreaceRate]: number;
-  [ConfigKey.PlayerStaminaDecreaceRate]: number;
-  [ConfigKey.PlayerStomachDecreaceRate]: number;
   [ConfigKey.RESTAPIEnabled]: boolean;
   [ConfigKey.RESTAPIPort]: number;
   [ConfigKey.bShowPlayerList]: boolean;
   [ConfigKey.ChatPostLimitPerMinute]: number;
-  [ConfigKey.AllowConnectPlatform]: string;
+  [ConfigKey.CrossplayPlatforms]: string;
   [ConfigKey.bIsUseBackupSaveData]: boolean;
   [ConfigKey.LogFormatType]: string;
   [ConfigKey.SupplyDropSpan]: number;
   [ConfigKey.bAllowGlobalPalboxExport]: boolean;
   [ConfigKey.bAllowGlobalPalboxImport]: boolean;
-  [ConfigKey.bCharacterRecreateInHardcore]: boolean;
-  [ConfigKey.bIsRandomizerPalLevelRandom]: boolean;
-  [ConfigKey.CrossplayPlatforms]: string;
   [ConfigKey.EquipmentDurabilityDamageRate]: number;
   [ConfigKey.ItemContainerForceMarkDirtyInterval]: number;
   [ConfigKey.MaxBuildingLimitNum]: number;
   [ConfigKey.ServerReplicatePawnCullDistance]: number;
+  [ConfigKey.PhysicsActiveDropItemMaxNum]: number;
+  [ConfigKey.bEnableFastTravelOnlyBaseCamp]: boolean;
+  [ConfigKey.bAllowClientMod]: boolean;
+  [ConfigKey.bIsShowJoinLeftMessage]: boolean;
+  [ConfigKey.EnablePredatorBossPal]: boolean;
+  [ConfigKey.PlayerDataPalStorageUpdateCheckTickInterval]: number;
+  [ConfigKey.ItemCorruptionMultiplier]: number;
+  [ConfigKey.MonsterFarmActionSpeedRate]: number;
+  [ConfigKey.DenyTechnologyList]: string;
+  [ConfigKey.GuildRejoinCooldownMinutes]: number;
+  [ConfigKey.AutoTransferMasterCheckIntervalSeconds]: number;
+  [ConfigKey.AutoTransferMasterThresholdDays]: number;
+  [ConfigKey.MaxGuildsPerFrame]: number;
+  [ConfigKey.BlockRespawnTime]: number;
+  [ConfigKey.RespawnPenaltyDurationThreshold]: number;
+  [ConfigKey.RespawnPenaltyTimeScale]: number;
+  [ConfigKey.bDisplayPvPItemNumOnWorldMap_BaseCamp]: boolean;
+  [ConfigKey.bDisplayPvPItemNumOnWorldMap_Player]: boolean;
+  [ConfigKey.AdditionalDropItemWhenPlayerKillingInPvPMode]: string;
+  [ConfigKey.AdditionalDropItemNumWhenPlayerKillingInPvPMode]: number;
+  [ConfigKey.bAdditionalDropItemWhenPlayerKillingInPvPMode]: boolean;
+  [ConfigKey.bEnableVoiceChat]: boolean;
+  [ConfigKey.VoiceChatMaxVolumeDistance]: number;
+  [ConfigKey.VoiceChatZeroVolumeDistance]: number;
+  [ConfigKey.bAllowEnhanceStat_Health]: boolean;
+  [ConfigKey.bAllowEnhanceStat_Attack]: boolean;
+  [ConfigKey.bAllowEnhanceStat_Stamina]: boolean;
+  [ConfigKey.bAllowEnhanceStat_Weight]: boolean;
+  [ConfigKey.bAllowEnhanceStat_WorkSpeed]: boolean;
+  [ConfigKey.bEnableBuildingPlayerUIdDisplay]: boolean;
+  [ConfigKey.BuildingNameDisplayCacheTTLSeconds]: number;
 };
 
-export const configLabels = {
-  [ConfigKey.Difficulty]: 'Difficulty',
-  [ConfigKey.RandomizerType]: 'Randomizer Type',
-  [ConfigKey.RandomizerSeed]: 'Randomizer Seed',
-  [ConfigKey.DayTimeSpeedRate]: 'Day Time Speed Rate',
-  [ConfigKey.NightTimeSpeedRate]: 'Night Time Speed Rate',
-  [ConfigKey.ExpRate]: 'Experience Rate',
-  [ConfigKey.PalCaptureRate]: 'Pal Capture Rate',
-  [ConfigKey.PalSpawnNumRate]: 'Pal Spawn Number Rate',
-  [ConfigKey.PalDamageRateAttack]: 'Pal Damage Rate (Attack)',
-  [ConfigKey.PalDamageRateDefense]: 'Pal Damage Rate (Defense)',
-  [ConfigKey.PlayerDamageRateAttack]: 'Player Damage Rate (Attack)',
-  [ConfigKey.PlayerDamageRateDefense]: 'Player Damage Rate (Defense)',
-  [ConfigKey.PlayerStomachDecreaseRate]: 'Player Stomach Decrease Rate',
-  [ConfigKey.PlayerStaminaDecreaseRate]: 'Player Stamina Decrease Rate',
-  [ConfigKey.PlayerAutoHPRegeneRate]: 'Player Auto HP Regeneration Rate',
-  [ConfigKey.PlayerAutoHpRegeneRateInSleep]:
-    'Player Auto HP Regeneration Rate (Sleep)',
-  [ConfigKey.PalStomachDecreaseRate]: 'Pal Stomach Decrease Rate',
-  [ConfigKey.PalStaminaDecreaseRate]: 'Pal Stamina Decrease Rate',
-  [ConfigKey.PalAutoHPRegeneRate]: 'Pal Auto HP Regeneration Rate',
-  [ConfigKey.PalAutoHpRegeneRateInSleep]:
-    'Pal Auto HP Regeneration Rate (Sleep)',
-  [ConfigKey.BuildObjectHpRate]: 'Build Object HP Rate',
-  [ConfigKey.BuildObjectDamageRate]: 'Build Object Damage Rate',
-  [ConfigKey.BuildObjectDeteriorationDamageRate]:
-    'Build Object Deterioration Damage Rate',
-  [ConfigKey.CollectionDropRate]: 'Collection Drop Rate',
-  [ConfigKey.CollectionObjectHpRate]: 'Collection Object HP Rate',
-  [ConfigKey.CollectionObjectRespawnSpeedRate]:
-    'Collection Object Respawn Speed Rate',
-  [ConfigKey.EnemyDropItemRate]: 'Enemy Drop Item Rate',
-  [ConfigKey.DeathPenalty]: 'Death Penalty',
-  [ConfigKey.bEnablePlayerToPlayerDamage]: 'Enable Player-to-Player Damage',
-  [ConfigKey.bEnableFriendlyFire]: 'Enable Friendly Fire',
-  [ConfigKey.bEnableInvaderEnemy]: 'Enable Invader Enemy',
-  [ConfigKey.bActiveUNKO]: 'Active UNKO',
-  [ConfigKey.bEnableAimAssistPad]: 'Enable Aim Assist (Pad)',
-  [ConfigKey.bEnableAimAssistKeyboard]: 'Enable Aim Assist (Keyboard)',
-  [ConfigKey.DropItemMaxNum]: 'Drop Item Maximum Number',
-  [ConfigKey.DropItemMaxNum_UNKO]: 'Drop Item Maximum Number (UNKO)',
-  [ConfigKey.BaseCampMaxNum]: 'Base Camp Maximum Number',
-  [ConfigKey.BaseCampWorkerMaxNum]: 'Base Camp Worker Maximum Number',
-  [ConfigKey.DropItemAliveMaxHours]: 'Drop Item Alive Maximum Hours',
-  [ConfigKey.bAutoResetGuildNoOnlinePlayers]:
-    'Auto Reset Guild (No Online Players)',
-  [ConfigKey.AutoResetGuildTimeNoOnlinePlayers]:
-    'Auto Reset Guild Time (No Online Players)',
-  [ConfigKey.GuildPlayerMaxNum]: 'Guild Player Maximum Number',
-  [ConfigKey.BaseCampMaxNumInGuild]: 'Guild Base Camp Maximum Number',
-  [ConfigKey.PalEggDefaultHatchingTime]: 'Pal Egg Default Hatching Time',
-  [ConfigKey.WorkSpeedRate]: 'Work Speed Rate',
-  [ConfigKey.AutoSaveSpan]: 'Auto Save Interval Time',
-  [ConfigKey.bIsMultiplay]: 'Is Multiplay',
-  [ConfigKey.bIsPvP]: 'Is PvP',
-  [ConfigKey.bHardcore]: 'Enable Hardcore',
-  [ConfigKey.bPalLost]: 'Lose pals on (pal)death',
-  [ConfigKey.bCanPickupOtherGuildDeathPenaltyDrop]:
-    'Can Pickup Other Guild Death Penalty Drop',
-  [ConfigKey.bEnableNonLoginPenalty]: 'Enable Non-Login Penalty',
-  [ConfigKey.bEnableFastTravel]: 'Enable Fast Travel',
-  [ConfigKey.bIsStartLocationSelectByMap]: 'Is Start Location Select By Map',
-  [ConfigKey.bExistPlayerAfterLogout]: 'Exist Player After Logout',
-  [ConfigKey.bEnableDefenseOtherGuildPlayer]:
-    'Enable Defense Other Guild Player',
-  [ConfigKey.bInvisibleOtherGuildBaseCampAreaFX]:
-    'Invisible Other Guild Base Camp FX',
-  [ConfigKey.bBuildAreaLimit]: 'Build Area Limit',
-  [ConfigKey.ItemWeightRate]: 'Item Weight Rate',
-  [ConfigKey.CoopPlayerMaxNum]: 'Coop Player Maximum Number',
-  [ConfigKey.ServerPlayerMaxNum]: 'Server Player Maximum Number',
-  [ConfigKey.ServerName]: 'Server Name',
-  [ConfigKey.ServerDescription]: 'Server Description',
-  [ConfigKey.AdminPassword]: 'Admin Password',
-  [ConfigKey.ServerPassword]: 'Server Password',
-  [ConfigKey.PublicPort]: 'Public Port',
-  [ConfigKey.PublicIP]: 'Public IP',
-  [ConfigKey.RCONEnabled]: 'RCON Enabled',
-  [ConfigKey.RCONPort]: 'RCON Port',
-  [ConfigKey.Region]: 'Region',
-  [ConfigKey.bUseAuth]: 'Use Authentication',
-  [ConfigKey.BanListURL]: 'Ban List URL',
-  [ConfigKey.PalStaminaDecreaceRate]: 'Pal Stamina Decrease Rate (Typo Fix)',
-  [ConfigKey.PalStomachDecreaceRate]: 'Pal Stomach Decrease Rate',
-  [ConfigKey.PlayerStaminaDecreaceRate]: 'Player Stamina Decrease Rate',
-  [ConfigKey.PlayerStomachDecreaceRate]: 'Player Stomach Decrease Rate',
-  [ConfigKey.RESTAPIEnabled]: 'REST API Enabled',
-  [ConfigKey.RESTAPIPort]: 'REST API Port',
-  [ConfigKey.bShowPlayerList]: 'Show Player List',
-  [ConfigKey.ChatPostLimitPerMinute]: 'Chat Post Limit per Minute',
-  [ConfigKey.AllowConnectPlatform]: 'Allow Connect Platform (Deprecated)',
-  [ConfigKey.bIsUseBackupSaveData]: 'Use Backup Save Data',
-  [ConfigKey.LogFormatType]: 'Log Format Type',
-  [ConfigKey.SupplyDropSpan]: 'Supply Drop Interval',
-  
-  // 🔥 v0.6.0 새로 추가된 설정들
-  [ConfigKey.bAllowGlobalPalboxExport]: 'Allow Global Palbox Export',
-  [ConfigKey.bAllowGlobalPalboxImport]: 'Allow Global Palbox Import',
-  [ConfigKey.bCharacterRecreateInHardcore]: 'Character Recreate in Hardcore',
-  [ConfigKey.bIsRandomizerPalLevelRandom]: 'Random Pal Level Randomization',
-  [ConfigKey.CrossplayPlatforms]: 'Crossplay Platforms',
-  [ConfigKey.EquipmentDurabilityDamageRate]: 'Equipment Durability Damage Rate',
-  [ConfigKey.ItemContainerForceMarkDirtyInterval]: 'Item Container Force Sync Interval',
-  [ConfigKey.MaxBuildingLimitNum]: 'Max Building Limit Per Player',
-  [ConfigKey.ServerReplicatePawnCullDistance]: 'Server Replicate Pawn Cull Distance'
-};
-
-export const configTypes = {
+export const configTypes: Record<string, TConfigValueType> = {
   Difficulty: 'string',
   RandomizerType: 'string',
   RandomizerSeed: 'string',
+  bIsRandomizerPalLevelRandom: 'boolean',
   DayTimeSpeedRate: 'number',
   NightTimeSpeedRate: 'number',
   ExpRate: 'number',
@@ -312,12 +262,12 @@ export const configTypes = {
   PalDamageRateDefense: 'number',
   PlayerDamageRateAttack: 'number',
   PlayerDamageRateDefense: 'number',
-  PlayerStomachDecreaseRate: 'number',
-  PlayerStaminaDecreaseRate: 'number',
+  PlayerStomachDecreaceRate: 'number',
+  PlayerStaminaDecreaceRate: 'number',
   PlayerAutoHPRegeneRate: 'number',
   PlayerAutoHpRegeneRateInSleep: 'number',
-  PalStomachDecreaseRate: 'number',
-  PalStaminaDecreaseRate: 'number',
+  PalStomachDecreaceRate: 'number',
+  PalStaminaDecreaceRate: 'number',
   PalAutoHPRegeneRate: 'number',
   PalAutoHpRegeneRateInSleep: 'number',
   BuildObjectHpRate: 'number',
@@ -350,6 +300,7 @@ export const configTypes = {
   bIsPvP: 'boolean',
   bHardcore: 'boolean',
   bPalLost: 'boolean',
+  bCharacterRecreateInHardcore: 'boolean',
   bCanPickupOtherGuildDeathPenaltyDrop: 'boolean',
   bEnableNonLoginPenalty: 'boolean',
   bEnableFastTravel: 'boolean',
@@ -372,25 +323,49 @@ export const configTypes = {
   Region: 'string',
   bUseAuth: 'boolean',
   BanListURL: 'string',
-  PalStaminaDecreaceRate: 'number',
-  PalStomachDecreaceRate: 'number',
-  PlayerStaminaDecreaceRate: 'number',
-  PlayerStomachDecreaceRate: 'number',
   RESTAPIEnabled: 'boolean',
   RESTAPIPort: 'number',
   bShowPlayerList: 'boolean',
   ChatPostLimitPerMinute: 'number',
-  AllowConnectPlatform: 'string',
+  CrossplayPlatforms: 'tuple',
   bIsUseBackupSaveData: 'boolean',
   LogFormatType: 'string',
   SupplyDropSpan: 'number',
   bAllowGlobalPalboxExport: 'boolean',
   bAllowGlobalPalboxImport: 'boolean',
-  bCharacterRecreateInHardcore: 'boolean',
-  bIsRandomizerPalLevelRandom: 'boolean',
-  CrossplayPlatforms: 'string',
   EquipmentDurabilityDamageRate: 'number',
   ItemContainerForceMarkDirtyInterval: 'number',
   MaxBuildingLimitNum: 'number',
-  ServerReplicatePawnCullDistance: 'number'
+  ServerReplicatePawnCullDistance: 'number',
+  PhysicsActiveDropItemMaxNum: 'number',
+  bEnableFastTravelOnlyBaseCamp: 'boolean',
+  bAllowClientMod: 'boolean',
+  bIsShowJoinLeftMessage: 'boolean',
+  EnablePredatorBossPal: 'boolean',
+  PlayerDataPalStorageUpdateCheckTickInterval: 'number',
+  ItemCorruptionMultiplier: 'number',
+  MonsterFarmActionSpeedRate: 'number',
+  DenyTechnologyList: 'string',
+  GuildRejoinCooldownMinutes: 'number',
+  AutoTransferMasterCheckIntervalSeconds: 'number',
+  AutoTransferMasterThresholdDays: 'number',
+  MaxGuildsPerFrame: 'number',
+  BlockRespawnTime: 'number',
+  RespawnPenaltyDurationThreshold: 'number',
+  RespawnPenaltyTimeScale: 'number',
+  bDisplayPvPItemNumOnWorldMap_BaseCamp: 'boolean',
+  bDisplayPvPItemNumOnWorldMap_Player: 'boolean',
+  AdditionalDropItemWhenPlayerKillingInPvPMode: 'string',
+  AdditionalDropItemNumWhenPlayerKillingInPvPMode: 'number',
+  bAdditionalDropItemWhenPlayerKillingInPvPMode: 'boolean',
+  bEnableVoiceChat: 'boolean',
+  VoiceChatMaxVolumeDistance: 'number',
+  VoiceChatZeroVolumeDistance: 'number',
+  bAllowEnhanceStat_Health: 'boolean',
+  bAllowEnhanceStat_Attack: 'boolean',
+  bAllowEnhanceStat_Stamina: 'boolean',
+  bAllowEnhanceStat_Weight: 'boolean',
+  bAllowEnhanceStat_WorkSpeed: 'boolean',
+  bEnableBuildingPlayerUIdDisplay: 'boolean',
+  BuildingNameDisplayCacheTTLSeconds: 'number'
 };

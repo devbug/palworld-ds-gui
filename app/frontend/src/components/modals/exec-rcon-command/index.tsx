@@ -13,8 +13,10 @@ import { closeModals } from '../../../actions/modal';
 import useModalsInfo from '../../../hooks/use-modals-info';
 import { useState } from 'react';
 import { ServerAPI } from '../../../server';
+import { useTranslation } from 'react-i18next';
 
 const ExecRonCommandModal = () => {
+  const { t } = useTranslation();
   const [loading, setLoading] = useState(false);
   const [command, setCommand] = useState('');
   const [result, setResult] = useState('');
@@ -40,13 +42,13 @@ const ExecRonCommandModal = () => {
     >
       <ModalContent>
         <ModalHeader className="flex gap-1 items-center">
-          <p>Execute RCON Command</p>
+          <p>{t('modals.execRcon.title')}</p>
         </ModalHeader>
         <ModalBody>
           <Input
             className="w-full"
-            placeholder="Write your command here..."
-            label="Command"
+            placeholder={t('modals.execRcon.placeholder')}
+            label={t('modals.execRcon.commandLabel')}
             value={command}
             onChange={(e) => setCommand(e.target.value)}
             onKeyDown={(e) => e.key === 'Enter' && onExecuteClick()}
@@ -54,7 +56,7 @@ const ExecRonCommandModal = () => {
 
           {result && (
             <div className="flex flex-col gap-2">
-              <p className="text-sm">Server response:</p>
+              <p className="text-sm">{t('modals.execRcon.response')}</p>
               <Card className="w-full h-full">
                 <CardBody className="bg-content2">
                   <pre className="flex text-xs whitespace-pre-wrap h-[120px]">
@@ -67,7 +69,7 @@ const ExecRonCommandModal = () => {
         </ModalBody>
         <ModalFooter className="justify-center">
           <Button variant="ghost" onClick={() => closeModals()}>
-            Close
+            {t('common.close')}
           </Button>
           <Button
             variant="solid"
@@ -75,7 +77,7 @@ const ExecRonCommandModal = () => {
             onClick={onExecuteClick}
             isLoading={loading}
           >
-            Execute
+            {t('common.execute')}
           </Button>
         </ModalFooter>
       </ModalContent>

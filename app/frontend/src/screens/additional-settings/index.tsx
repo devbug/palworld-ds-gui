@@ -8,6 +8,7 @@ import { IconDeviceFloppy } from '@tabler/icons-react';
 import { saveAdditionalSettings } from '../../actions/app';
 import RestartOnCrashSection from './restart-on-crash-section';
 import StopCountdownSection from './stop-countdown-section';
+import { useTranslation } from 'react-i18next';
 
 const EMPTY_ERRORS = {
   timedRestart: {
@@ -19,6 +20,7 @@ const EMPTY_ERRORS = {
 };
 
 const AdditionalSettings = () => {
+  const { t } = useTranslation();
   const currentAdditionalSettings = useAdditionalSettings();
   const [additionalSettings, setAdditionalSettings] =
     useState<TAdditionalSettings>(currentAdditionalSettings);
@@ -68,7 +70,7 @@ const AdditionalSettings = () => {
   return (
     <Layout
       className="relative flex flex-col gap-4"
-      title="Additional Settings"
+      title={t('additionalSettings.title')}
     >
       <TimedRestartSection
         value={additionalSettings.timedRestart}
@@ -119,7 +121,7 @@ const AdditionalSettings = () => {
         onClick={onSaveSettingsClick}
         endContent={<IconDeviceFloppy size="1.0rem" />}
       >
-        Save
+        {t('common.save')}
       </Button>
     </Layout>
   );

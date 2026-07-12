@@ -9,6 +9,7 @@ import {
 import { closeModals } from '../../../actions/modal';
 import useModalsInfo from '../../../hooks/use-modals-info';
 import { useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 
 type TConfirmActionModalProps = {
   onCancel?: () => void;
@@ -29,6 +30,7 @@ const ConfirmActionModal = ({
   cancelLabel,
   variant
 }: TConfirmActionModalProps) => {
+  const { t } = useTranslation();
   const { isModalOpen } = useModalsInfo();
   const buttonColor = useMemo(
     () => (variant === 'danger' ? 'danger' : 'primary'),
@@ -47,19 +49,19 @@ const ConfirmActionModal = ({
     >
       <ModalContent>
         <ModalHeader className="flex gap-1 items-center">
-          <p>{title ?? 'Please confirm your action.'}</p>
+          <p>{title ?? t('modals.confirmTitle')}</p>
         </ModalHeader>
-        <ModalBody>{message ?? 'Are you sure?'}</ModalBody>
+        <ModalBody>{message ?? t('modals.areYouSure')}</ModalBody>
         <ModalFooter className="justify-center">
           <Button variant="ghost" onClick={() => onCancel?.()}>
-            {cancelLabel ?? 'Cancel'}
+            {cancelLabel ?? t('common.cancel')}
           </Button>
           <Button
             variant="solid"
             onClick={() => onConfirm?.()}
             color={buttonColor}
           >
-            {confirmLabel ?? 'Confirm'}
+            {confirmLabel ?? t('common.confirm')}
           </Button>
         </ModalFooter>
       </ModalContent>

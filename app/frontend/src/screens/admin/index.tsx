@@ -37,27 +37,29 @@ import { ConfigKey } from '../../types/server-config';
 import { notifySuccess } from '../../actions/app';
 import { ServerAPI } from '../../server';
 import useServerStatus from '../../hooks/use-server-status';
+import { useTranslation } from 'react-i18next';
+import i18n from '../../i18n';
 
-const columns = [
+const getColumns = () => [
   {
     key: 'image',
-    label: 'Image'
+    label: i18n.t('admin.columns.image')
   },
   {
     key: 'name',
-    label: 'Name'
+    label: i18n.t('admin.columns.name')
   },
   {
     key: 'uid',
-    label: 'Player UID'
+    label: i18n.t('admin.columns.uid')
   },
   {
     key: 'steamId',
-    label: 'Steam ID'
+    label: i18n.t('admin.columns.steamId')
   },
   {
     key: 'actions',
-    label: 'Actions'
+    label: i18n.t('admin.columns.actions')
   }
 ];
 
@@ -69,11 +71,13 @@ type TAdminActionsProps = {
 };
 
 const AdminActions = ({ player }: TAdminActionsProps) => {
+  const { t } = useTranslation();
+
   const onBanClick = async () => {
     await requestConfirmation({
-      title: 'Confirmation',
-      message: `Are you sure you want to ban ${player.name}? The ban is permanent.`,
-      confirmLabel: 'Ban',
+      title: t('admin.confirmation'),
+      message: t('admin.banConfirm', { name: player.name }),
+      confirmLabel: t('admin.ban'),
       variant: 'danger',
       onConfirm: async () => {
         await ServerAPI.rcon.ban(player.uid);
@@ -83,9 +87,9 @@ const AdminActions = ({ player }: TAdminActionsProps) => {
 
   const onKickClick = async () => {
     await requestConfirmation({
-      title: 'Confirmation',
-      message: `Are you sure you want to kick ${player.name}?`,
-      confirmLabel: 'Kick',
+      title: t('admin.confirmation'),
+      message: t('admin.kickConfirm', { name: player.name }),
+      confirmLabel: t('admin.kick'),
       variant: 'danger',
       onConfirm: async () => {
         await ServerAPI.rcon.kick(player.uid);
@@ -106,7 +110,7 @@ const AdminActions = ({ player }: TAdminActionsProps) => {
           endContent={<IconUserCancel size="1.0rem" />}
           onClick={onKickClick}
         >
-          Kick
+          {t('admin.kick')}
         </DropdownItem>
         <DropdownItem
           key="ban"
@@ -115,7 +119,7 @@ const AdminActions = ({ player }: TAdminActionsProps) => {
           endContent={<IconHammer size="1.0rem" />}
           onClick={onBanClick}
         >
-          Ban
+          {t('admin.ban')}
         </DropdownItem>
       </DropdownMenu>
     </Dropdown>
@@ -123,6 +127,7 @@ const AdminActions = ({ player }: TAdminActionsProps) => {
 };
 
 const Admin = () => {
+  const { t } = useTranslation();
   const serverStatus = useServerStatus();
   const hasLoadedFirst = useRef(false);
   const intervalRef = useRef<NodeJS.Timeout>();
@@ -172,19 +177,19 @@ const Admin = () => {
   const onSendMessageClick = async () => {
     await ServerAPI.rcon.sendMessage(message);
     setMessage('');
-    notifySuccess('Message sent');
+    notifySuccess(t('admin.messageSent'));
   };
 
   const onSaveClick = async () => {
     setIsSaving(true);
     await ServerAPI.rcon.save();
     setIsSaving(false);
-    notifySuccess('Save command executed');
+    notifySuccess(t('admin.saveExecuted'));
   };
 
   const onRefreshClick = async () => {
     await loadInfo();
-    notifySuccess('Data refreshed');
+    notifySuccess(t('admin.dataRefreshed'));
   };
 
   useEffect(() => {
@@ -211,7 +216,7 @@ const Admin = () => {
   return (
     <Layout
       className="relative flex flex-col gap-4"
-      title="Admin"
+      title={t('admin.title')}
       subtitle={
         isOnline ? (
           <div>
@@ -221,14 +226,16 @@ const Admin = () => {
             </span>
           </div>
         ) : (
-          <span className="text-sm text-neutral-500">Connecting...</span>
+          <span className="text-sm text-neutral-500">
+            {t('admin.connecting')}
+          </span>
         )
       }
       rightSlot={
         <div className="flex gap-2 w-full justify-center items-center">
           {!serverConfig[ConfigKey.RCONEnabled] ? (
             <div>
-              <Tooltip content="RCON is disabled on the local server. Enable RCON on the server settings to use this section.">
+              <Tooltip content={t('admin.rconDisabledTooltip')}>
                 <IconAlertCircle size="1.3rem" color="yellow" />
               </Tooltip>
             </div>
@@ -244,7 +251,7 @@ const Admin = () => {
                 openModal(Modal.EXEC_RCON_COMMAND);
               }}
             >
-              Execute Command
+              {t('admin.executeCommand')}
             </Button>
           )}
         </div>
@@ -252,7 +259,7 @@ const Admin = () => {
     >
       <div className="flex gap-2 items-center justify-between">
         <div className="flex gap-2">
-          <Tooltip content="Gets fresh data from the server">
+          <Tooltip content={t('admin.refreshTooltip')}>
             <Button
               variant="shadow"
               color="primary"
@@ -262,10 +269,10 @@ const Admin = () => {
               isDisabled={!isOnline}
               endContent={<IconRefresh size="0.9rem" />}
             >
-              Refresh
+              {t('common.refresh')}
             </Button>
           </Tooltip>
-          <Tooltip content="Executes the save command on the server">
+          <Tooltip content={t('admin.saveTooltip')}>
             <Button
               variant="shadow"
               color="primary"
@@ -275,7 +282,7 @@ const Admin = () => {
               isDisabled={!isOnline}
               endContent={<IconDeviceFloppy size="0.9rem" />}
             >
-              Save
+              {t('common.save')}
             </Button>
           </Tooltip>
         </div>
@@ -283,7 +290,7 @@ const Admin = () => {
         <div>
           <Input
             className="w-[300px]"
-            placeholder="Write a message to send to the server..."
+            placeholder={t('admin.messagePlaceholder')}
             onChange={(event) => setMessage(event.target.value)}
             onKeyDown={(event) => {
               if (event.key === 'Enter') {
@@ -307,7 +314,7 @@ const Admin = () => {
       </div>
 
       <Table className="max-h-[346px]">
-        <TableHeader columns={columns}>
+        <TableHeader columns={getColumns()}>
           {(column) => <TableColumn {...column}>{column.label}</TableColumn>}
         </TableHeader>
         <TableBody

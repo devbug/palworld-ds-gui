@@ -6,8 +6,10 @@ import { checkForUpdates } from '../../actions/app';
 import { useState } from 'react';
 import { IconRefresh } from '@tabler/icons-react';
 import { isWeb } from '../../helpers/is-web';
+import { useTranslation } from 'react-i18next';
 
 const About = () => {
+  const { t } = useTranslation();
   const [loading, setLoading] = useState(false);
   const { hasUpdates, latestVersion } = useHasUpdates();
 
@@ -20,7 +22,7 @@ const About = () => {
   return (
     <Layout
       className="relative flex flex-col gap-4"
-      title="About"
+      title={t('about.title')}
       subtitle={
         <p className="text-sm text-neutral-500">
           v{APP_VERSION}
@@ -34,10 +36,10 @@ const About = () => {
                 )
               }
             >
-              A new version is available (v{latestVersion})
+              {t('about.newVersion', { version: latestVersion })}
             </span>
           ) : (
-            <span>You are using the latest version 🎉</span>
+            <span>{t('about.latestVersion')}</span>
           )}
         </p>
       }
@@ -52,13 +54,13 @@ const About = () => {
             isLoading={loading}
             endContent={<IconRefresh size="0.9rem" />}
           >
-            Check for updates now
+            {t('about.checkUpdates')}
           </Button>
         </div>
       )}
 
       <p>
-        This software is open source and available{' '}
+        {t('about.openSourcePrefix')}{' '}
         <span
           className="text-blue-500 hover:underline cursor-pointer"
           onClick={() =>
@@ -67,16 +69,13 @@ const About = () => {
             )
           }
         >
-          here
+          {t('about.here')}
         </span>
-        . Contributions are welcome.
+        {t('about.openSourceSuffix')}
       </p>
+      <p>{t('about.disclaimer')}</p>
       <p>
-        This software is not affiliated with or endorsed by the original authors
-        of the software it is intended to manage.
-      </p>
-      <p>
-        Licensed under the{' '}
+        {t('about.licensedUnder')}{' '}
         <span
           className="text-blue-500 hover:underline cursor-pointer"
           onClick={() =>
@@ -88,7 +87,7 @@ const About = () => {
         .
       </p>
       <p>
-        Created by{' '}
+        {t('about.createdBy')}{' '}
         <span
           className="text-blue-500 hover:underline cursor-pointer"
           onClick={() => DesktopAPI.openUrl('https://github.com/diogomartino')}

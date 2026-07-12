@@ -1,5 +1,6 @@
 import { Input, Switch } from '@nextui-org/react';
 import { TGenericObject, TTimedRestartSettings } from '../../types';
+import { useTranslation } from 'react-i18next';
 
 type TTimedRestartSectionProps = {
   value: TTimedRestartSettings;
@@ -12,13 +13,17 @@ const TimedRestartSection = ({
   onChange,
   errors
 }: TTimedRestartSectionProps) => {
+  const { t } = useTranslation();
+
   return (
     <div className="flex flex-col gap-4">
       <div className="flex items-center gap-4">
         <div>
-          <p className="font-bold">Timed restart</p>
+          <p className="font-bold">
+            {t('additionalSettings.timedRestart.title')}
+          </p>
           <p className="text-sm text-neutral-500">
-            Schedule server restarts at regular intervals
+            {t('additionalSettings.timedRestart.description')}
           </p>
         </div>
 
@@ -27,7 +32,7 @@ const TimedRestartSection = ({
             isSelected={value.enabled}
             onChange={() => onChange('enabled', Boolean(!value.enabled))}
           >
-            Enabled
+            {t('common.enabled')}
           </Switch>
         </div>
       </div>
@@ -35,7 +40,7 @@ const TimedRestartSection = ({
       <div className="flex justify-between items-center gap-4">
         <Input
           className="w-48"
-          label="Interval"
+          label={t('additionalSettings.timedRestart.interval')}
           isInvalid={!!errors.interval}
           isDisabled={!value.enabled}
           labelPlacement="outside"
@@ -44,7 +49,7 @@ const TimedRestartSection = ({
           step={0.1}
           placeholder="1"
           type="number"
-          endContent={<span className="text-sm">Hours</span>}
+          endContent={<span className="text-sm">{t('common.hours')}</span>}
           value={value.interval.toString()}
           onChange={(e) => onChange('interval', e.target.value)}
         />

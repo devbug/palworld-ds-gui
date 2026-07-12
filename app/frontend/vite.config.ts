@@ -1,7 +1,13 @@
+import { readFileSync } from 'node:fs';
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react-swc';
 import viteCompression from 'vite-plugin-compression';
-import wails from '../wails.json' with { type: 'json' };
+
+// vite 4의 esbuild는 import attributes(with { type: 'json' })를
+// 지원하지 않으므로 직접 읽는다.
+const wails = JSON.parse(
+  readFileSync(new URL('../wails.json', import.meta.url), 'utf-8')
+);
 
 // https://vitejs.dev/config/
 export default defineConfig({

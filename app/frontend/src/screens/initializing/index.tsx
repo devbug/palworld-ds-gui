@@ -7,8 +7,10 @@ import { setServerCredentials } from '../../actions/app';
 import useServerCredentials from '../../hooks/use-server-credentials';
 import { DesktopAPI } from '../../desktop';
 import { isWeb } from '../../helpers/is-web';
+import { useTranslation } from 'react-i18next';
 
 const Initializing = () => {
+  const { t } = useTranslation();
   const serverCredentials = useServerCredentials();
   const { connecting, connect, error } = useSocket();
   const [host, setHost] = useState(serverCredentials.host);
@@ -29,19 +31,23 @@ const Initializing = () => {
             width={350}
             height={350}
           />
-          <p className="text-xl font-bold text-center">Dedicated Server GUI (modified)</p>
-          <p className="text-sm text-neutral-500">v{APP_VERSION} - for v0.6.0+</p>
+          <p className="text-xl font-bold text-center">
+            {t('initializing.appTitle')}
+          </p>
+          <p className="text-sm text-neutral-500">
+            {t('initializing.versionLine', { version: APP_VERSION })}
+          </p>
         </div>
 
         <div className="flex flex-col gap-2 w-[500px]">
           <Input
             size="lg"
-            label="GUI Server Address"
+            label={t('initializing.address')}
             placeholder="127.0.0.1:21577"
             endContent={
               <div className="cursor-default">
                 <Tooltip
-                  content="The address and port of the GUI server. Make sure you use the port of the GUI server and NOT the PalWorld server."
+                  content={t('initializing.addressTooltip')}
                   className="max-w-[300px]"
                 >
                   <IconInfoCircle color="#a0a0a0" />
@@ -53,13 +59,13 @@ const Initializing = () => {
           />
           <Input
             size="lg"
-            label="API Key"
+            label={t('initializing.apiKey')}
             type="password"
             placeholder=""
             endContent={
               <div className="cursor-default">
                 <Tooltip
-                  content="The API key of the GUI server. On the initial startup, the API key will be generated and shown in the console. You can also start the server with the -showkey flag to show the API key. Make sure to keep the API key secret."
+                  content={t('initializing.apiKeyTooltip')}
                   className="max-w-[300px]"
                 >
                   <IconInfoCircle color="#a0a0a0" />
@@ -73,9 +79,7 @@ const Initializing = () => {
 
         {error && (
           <p className="text-red-500">
-            {error === true
-              ? 'Could not connect. Make sure the GUI server is running and the address and API key are correct.'
-              : error}
+            {error === true ? t('initializing.connectionError') : error}
           </p>
         )}
 
@@ -87,12 +91,12 @@ const Initializing = () => {
           isLoading={connecting}
           isDisabled={!host || !apiKey}
         >
-          Connect
+          {t('initializing.connect')}
         </Button>
 
         <div className="flex flex-col items-center">
           <p className="text-sm text-neutral-500">
-            If you need help, please create an issue{' '}
+            {t('initializing.helpIssue')}{' '}
             <span
               className="text-blue-500 hover:underline cursor-pointer"
               onClick={() =>
@@ -101,14 +105,13 @@ const Initializing = () => {
                 )
               }
             >
-              here.
+              {t('common.here')}
             </span>
           </p>
 
           {isWeb() ? (
             <p className="text-sm text-neutral-500">
-              You are using the web version. You can also download the desktop
-              app{' '}
+              {t('initializing.webVersionNote')}{' '}
               <span
                 className="text-blue-500 hover:underline cursor-pointer"
                 onClick={() =>
@@ -117,17 +120,17 @@ const Initializing = () => {
                   )
                 }
               >
-                here.
+                {t('common.here')}
               </span>
             </p>
           ) : (
             <p className="text-sm text-neutral-500">
-              You are using the desktop app. You can also use the web version{' '}
+              {t('initializing.desktopVersionNote')}{' '}
               <span
                 className="text-blue-500 hover:underline cursor-pointer"
                 onClick={() => DesktopAPI.openUrl('https://app.palgui.com')}
               >
-                here.
+                {t('common.here')}
               </span>
             </p>
           )}

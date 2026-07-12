@@ -36,7 +36,11 @@ export const WebSocketContext = createContext<TContext>({
 const SocketProvider = ({ children }: TSocketProviderProps) => {
   const navigate = useNavigate();
 
-  const connect = (address: string = 'localhost:21577', apiKey: string, protocol: string = 'wss') => {
+  const connect = (
+    address: string = 'localhost:21577',
+    apiKey: string,
+    protocol: string = 'wss'
+  ) => {
     clearServerState();
     clearSocket(true);
     setSocketConnecting(true);
@@ -45,7 +49,7 @@ const SocketProvider = ({ children }: TSocketProviderProps) => {
 
     const socketUrl = `${protocol}://${address}/ws?auth=${apiKey}`;
     const socket = new WebSocket(socketUrl);
-    var connected = false;
+    let connected = false;
 
     const onOpen = () => {
       connected = true;
@@ -66,7 +70,7 @@ const SocketProvider = ({ children }: TSocketProviderProps) => {
       DesktopAPI.logToFile(`Websocket error: ${JSON.stringify(event)}`);
 
       if (!connected && protocol === 'wss') {
-        setTimeout(function() {
+        setTimeout(function () {
           connect(address, apiKey, 'ws');
         }, 100);
       }
