@@ -1,3 +1,8 @@
 allowBuilds:
   '@swc/core': true
   esbuild: true
+
+# pnpm 11+는 .npmrc의 public-hoist-pattern을 읽지 않으므로 여기에 선언한다.
+# tailwind.config.js의 content 글롭이 node_modules/@nextui-org/theme를 스캔하는 데 필요.
+publicHoistPattern:
+  - '*@nextui-org/*'
