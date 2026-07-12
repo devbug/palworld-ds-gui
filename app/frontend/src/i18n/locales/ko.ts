@@ -205,14 +205,15 @@ const ko: typeof en = {
     title: '관리',
     connecting: '연결하는 중...',
     executeCommand: '명령어 실행',
-    rconDisabledTooltip:
-      '로컬 서버에서 RCON이 비활성화되어 있습니다. 이 기능을 사용하려면 서버 설정에서 RCON을 활성화하세요.',
+    restDisabledTooltip:
+      '서버에서 REST API가 비활성화되어 있습니다. 이 기능을 사용하려면 게임 설정에서 REST API 사용을 켜세요.',
     refreshTooltip: '서버에서 최신 데이터를 가져옵니다',
     saveTooltip: '서버에서 저장 명령을 실행합니다',
     messagePlaceholder: '서버에 보낼 메시지를 입력하세요...',
     messageSent: '메시지를 전송했습니다',
     saveExecuted: '저장 명령을 실행했습니다',
     dataRefreshed: '데이터를 새로고침했습니다',
+    requestFailed: '요청 실패: {{error}}',
     columns: {
       image: '이미지',
       name: '이름',

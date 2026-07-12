@@ -7,6 +7,7 @@ import (
 	"palworld-ds-gui-server/utils"
 	"strings"
 	"sync"
+	"time"
 
 	"github.com/gorilla/websocket"
 )
@@ -19,6 +20,7 @@ var (
 	}
 	clients       = make(map[*websocket.Conn]bool)
 	mutex         = &sync.Mutex{}
+	writeMutex    = &sync.Mutex{}
 	eventHandlers = map[string]func(*websocket.Conn, []byte){
 		startServerEvent:            StartServerHandler,
 		stopServerEvent:             StopServerHandler,
@@ -39,9 +41,38 @@ var (
 		saveLaunchParamsEvent:       SaveLaunchParamsHandler,
 		getSteamAvatarEvent:         GetSteamAvatarHandler,
 		rconExecHandlerEvent:        RconExecHandlerHandler,
+		restRequestEvent:            RestRequestHandler,
 		saveAdditionalSettingsEvent: SaveAdditionalSettingsHandler,
 	}
 )
+
+// 응답을 받지 않는 클라이언트(비정상 종료 등) 때문에 쓰기가 영원히
+// 막히지 않도록 하는 제한 시간.
+const websocketWriteTimeout = 10 * time.Second
+
+// gorilla/websocket은 하나의 연결에 대한 동시 쓰기를 허용하지 않는다
+// (동시에 쓰면 패닉으로 프로세스 전체가 종료됨). 핸들러 응답, 콘솔 로그
+// 브로드캐스트, REST 고루틴 등 여러 고루틴이 쓰기를 수행하므로
+// 모든 쓰기를 전역 뮤텍스로 직렬화한다.
+func SafeWriteJSON(conn *websocket.Conn, v interface{}) error {
+	writeMutex.Lock()
+	defer writeMutex.Unlock()
+
+	conn.SetWriteDeadline(time.Now().Add(websocketWriteTimeout))
+
+	return conn.WriteJSON(v)
+}
+
+// 핸들러에서 패닉이 발생해도 GUI 서버 프로세스가 죽지 않도록 복구한다.
+func safeHandle(handler func(*websocket.Conn, []byte), conn *websocket.Conn, payload []byte, event string) {
+	defer func() {
+		if r := recover(); r != nil {
+			utils.LogToFile(fmt.Sprintf("Handler panic for event %s: %v", event, r), true)
+		}
+	}()
+
+	handler(conn, payload)
+}
 
 func handleWebSocket(w http.ResponseWriter, r *http.Request) {
 	authToken := r.URL.Query().Get("auth")
@@ -92,26 +123,44 @@ func handleWebSocket(w http.ResponseWriter, r *http.Request) {
 		}
 
 		if handler, ok := eventHandlers[message.Event]; ok {
-			handler(conn, p)
+			safeHandle(handler, conn, p, message.Event)
 		} else {
 			utils.LogToFile(fmt.Sprintf("Unknown event: %s", message.Event), true)
+			// 미지의 이벤트도 응답을 보내 클라이언트가 타임아웃까지
+			// 기다리지 않고 즉시 실패를 알 수 있게 한다.
+			SafeWriteJSON(conn, BaseResponse{
+				Event:   message.Event,
+				EventId: message.EventId,
+				Success: false,
+				Error:   fmt.Sprintf("Unknown event: %s (server version mismatch?)", message.Event),
+			})
 		}
 	}
 }
 
 func BroadcastJSON(v interface{}, exclude *websocket.Conn) {
+	// 쓰기 도중 mutex를 잡고 있으면 느린 클라이언트 하나가 신규 접속 등록까지
+	// 막을 수 있으므로, 대상 목록만 잠금 안에서 복사하고 쓰기는 잠금 밖에서 한다.
 	mutex.Lock()
-	defer mutex.Unlock()
+	targets := make([]*websocket.Conn, 0, len(clients))
 	for client := range clients {
-		if client == exclude {
-			continue
+		if client != exclude {
+			targets = append(targets, client)
 		}
+	}
+	mutex.Unlock()
 
-		err := client.WriteJSON(v)
+	for _, client := range targets {
+		err := SafeWriteJSON(client, v)
 		if err != nil {
-			utils.Log(err.Error())
+			// 주의: 여기서 utils.Log를 쓰면 EmitConsoleLog → BroadcastJSON으로
+			// 재귀 호출되어 데드락이 발생한다. 반드시 파일 로그만 남길 것.
+			utils.LogToFile(fmt.Sprintf("Broadcast write failed, dropping client: %s", err.Error()), true)
 			client.Close()
+
+			mutex.Lock()
 			delete(clients, client)
+			mutex.Unlock()
 		}
 	}
 }

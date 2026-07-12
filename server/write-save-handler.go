@@ -15,7 +15,7 @@ func WriteSaveHandler(conn *websocket.Conn, data []byte) {
 	err := json.Unmarshal(data, &message)
 	if err != nil {
 		utils.Log(err.Error())
-		conn.WriteJSON(BaseResponse{
+		SafeWriteJSON(conn, BaseResponse{
 			Event:   writeSaveEvent,
 			EventId: message.EventId,
 			Success: false,
@@ -26,7 +26,7 @@ func WriteSaveHandler(conn *websocket.Conn, data []byte) {
 	err = WriteSaveName(message.Data.NewSaveName)
 	if err != nil {
 		utils.Log(err.Error())
-		conn.WriteJSON(BaseResponse{
+		SafeWriteJSON(conn, BaseResponse{
 			Event:   writeSaveEvent,
 			EventId: message.EventId,
 			Success: false,
@@ -36,7 +36,7 @@ func WriteSaveHandler(conn *websocket.Conn, data []byte) {
 
 	// this response is just to flag the client that the write was successful
 	// the emit below will send the new save name to all clients
-	conn.WriteJSON(BaseResponse{
+	SafeWriteJSON(conn, BaseResponse{
 		Event:   writeSaveEvent,
 		EventId: message.EventId,
 		Success: true,

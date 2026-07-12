@@ -15,7 +15,7 @@ func DeleteBackupHandler(conn *websocket.Conn, data []byte) {
 	err := json.Unmarshal(data, &message)
 	if err != nil {
 		utils.Log(err.Error())
-		conn.WriteJSON(BaseResponse{
+		SafeWriteJSON(conn, BaseResponse{
 			Event:   deleteBackupEvent,
 			EventId: message.EventId,
 			Success: false,
@@ -27,7 +27,7 @@ func DeleteBackupHandler(conn *websocket.Conn, data []byte) {
 	err = backupmanager.Delete(message.Data.Filename)
 	if err != nil {
 		utils.Log(err.Error())
-		conn.WriteJSON(BaseResponse{
+		SafeWriteJSON(conn, BaseResponse{
 			Event:   deleteBackupEvent,
 			EventId: message.EventId,
 			Success: false,
@@ -36,7 +36,7 @@ func DeleteBackupHandler(conn *websocket.Conn, data []byte) {
 		return
 	}
 
-	conn.WriteJSON(BaseResponse{
+	SafeWriteJSON(conn, BaseResponse{
 		Event:   deleteBackupEvent,
 		EventId: message.EventId,
 		Success: true,

@@ -35,7 +35,7 @@ func GetSteamAvatarHandler(conn *websocket.Conn, data []byte) {
 	err := json.Unmarshal(data, &message)
 	if err != nil {
 		utils.Log(err.Error())
-		conn.WriteJSON(BaseResponse{
+		SafeWriteJSON(conn, BaseResponse{
 			Event:   getSteamAvatarEvent,
 			EventId: message.EventId,
 			Success: false,
@@ -47,7 +47,7 @@ func GetSteamAvatarHandler(conn *websocket.Conn, data []byte) {
 	imageUrl, err := GetSteamProfileAvatar(message.Data.SteamId64)
 	if err != nil {
 		utils.Log(err.Error())
-		conn.WriteJSON(BaseResponse{
+		SafeWriteJSON(conn, BaseResponse{
 			Event:   getSteamAvatarEvent,
 			EventId: message.EventId,
 			Success: false,
@@ -56,7 +56,7 @@ func GetSteamAvatarHandler(conn *websocket.Conn, data []byte) {
 		return
 	}
 
-	conn.WriteJSON(SimpleResponse{
+	SafeWriteJSON(conn, SimpleResponse{
 		BaseResponse: BaseResponse{
 			Event:   getSteamAvatarEvent,
 			EventId: message.EventId,

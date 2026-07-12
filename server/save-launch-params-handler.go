@@ -15,7 +15,7 @@ func SaveLaunchParamsHandler(conn *websocket.Conn, data []byte) {
 	err := json.Unmarshal(data, &message)
 	if err != nil {
 		utils.Log(err.Error())
-		conn.WriteJSON(BaseResponse{
+		SafeWriteJSON(conn, BaseResponse{
 			Event:   saveLaunchParamsEvent,
 			EventId: message.EventId,
 			Success: false,
@@ -28,7 +28,7 @@ func SaveLaunchParamsHandler(conn *websocket.Conn, data []byte) {
 	err = utils.SaveSettings()
 	if err != nil {
 		utils.Log(err.Error())
-		conn.WriteJSON(BaseResponse{
+		SafeWriteJSON(conn, BaseResponse{
 			Event:   saveLaunchParamsEvent,
 			EventId: message.EventId,
 			Success: false,
@@ -38,7 +38,7 @@ func SaveLaunchParamsHandler(conn *websocket.Conn, data []byte) {
 
 	// this response is just to flag the client that the write was successful
 	// the emit below will send the new save name to all clients
-	conn.WriteJSON(BaseResponse{
+	SafeWriteJSON(conn, BaseResponse{
 		Event:   saveLaunchParamsEvent,
 		EventId: message.EventId,
 		Success: true,

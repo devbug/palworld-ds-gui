@@ -15,7 +15,7 @@ func SaveAdditionalSettingsHandler(conn *websocket.Conn, data []byte) {
 	err := json.Unmarshal(data, &message)
 	if err != nil {
 		utils.Log(err.Error())
-		conn.WriteJSON(BaseResponse{
+		SafeWriteJSON(conn, BaseResponse{
 			Event:   saveAdditionalSettingsEvent,
 			EventId: message.EventId,
 			Success: false,
@@ -36,7 +36,7 @@ func SaveAdditionalSettingsHandler(conn *websocket.Conn, data []byte) {
 		timedrestartmanager.Stop()
 	}
 
-	conn.WriteJSON(BaseResponse{
+	SafeWriteJSON(conn, BaseResponse{
 		Event:   saveAdditionalSettingsEvent,
 		EventId: message.EventId,
 		Success: true,

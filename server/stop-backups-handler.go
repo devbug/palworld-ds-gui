@@ -15,7 +15,7 @@ func StopBackupsHandler(conn *websocket.Conn, data []byte) {
 	err := json.Unmarshal(data, &message)
 	if err != nil {
 		utils.Log(err.Error())
-		conn.WriteJSON(BaseResponse{
+		SafeWriteJSON(conn, BaseResponse{
 			Event:   stopBackupsEvent,
 			EventId: message.EventId,
 			Success: false,
@@ -25,7 +25,7 @@ func StopBackupsHandler(conn *websocket.Conn, data []byte) {
 
 	backupmanager.Stop()
 
-	conn.WriteJSON(BaseResponse{
+	SafeWriteJSON(conn, BaseResponse{
 		Event:   stopBackupsEvent,
 		EventId: message.EventId,
 		Success: true,

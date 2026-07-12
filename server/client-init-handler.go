@@ -15,7 +15,7 @@ func ClientInitHandler(conn *websocket.Conn, data []byte) {
 	err := json.Unmarshal(data, &message)
 	if err != nil {
 		utils.Log(err.Error())
-		conn.WriteJSON(BaseResponse{
+		SafeWriteJSON(conn, BaseResponse{
 			Event:   clientInitEvent,
 			EventId: message.EventId,
 			Success: false,
@@ -41,7 +41,7 @@ func ClientInitHandler(conn *websocket.Conn, data []byte) {
 		StopCountdown:  utils.Settings.StopCountdown,
 	}
 
-	conn.WriteJSON(ClientInitResponse{
+	SafeWriteJSON(conn, ClientInitResponse{
 		BaseResponse: BaseResponse{
 			Event:   clientInitEvent,
 			EventId: message.EventId,

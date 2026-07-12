@@ -12,7 +12,7 @@ import {
   onClientInited
 } from './actions/socket';
 import { DesktopAPI } from './desktop';
-import { RconCommand, TRconInfo, TRconPlayer } from './types/rcon';
+import { TRestInfo, TRestPlayer } from './types/rest';
 import { serverConfigSelector } from './selectors/server';
 
 const TIMEOUT_MS = 10000;
@@ -208,6 +208,7 @@ export const ServerAPI = {
     }
   },
   rcon: {
+    // 고급 사용자용 임의 명령 실행 (RCON은 1.0에서 deprecated — 관리 기능은 rest 사용)
     execute: async (command: string) => {
       const state = store.getState();
       const serverConfig = serverConfigSelector(state);
@@ -219,83 +220,59 @@ export const ServerAPI = {
       });
 
       return (result ?? '').trim();
+    }
+  },
+  rest: {
+    request: async (
+      endpoint: string,
+      body?: TGenericObject
+    ): Promise<string> => {
+      const { data } = await ServerAPI.send(SocketAction.REST_REQUEST, {
+        endpoint,
+        body: body ? JSON.stringify(body) : ''
+      });
+
+      return data ?? '';
     },
-    getInfo: async (): Promise<TRconInfo | undefined> => {
+    getInfo: async (): Promise<TRestInfo | undefined> => {
       try {
-        const result = (
-          (await ServerAPI.rcon.execute(RconCommand.INFO)) || ''
-        ).trim();
-
-        const regex = /Welcome to Pal Server\[(.*?)\]\s*(.*)/;
-        const match = result.match(regex);
-        const [, version, name] = match || [];
-
-        return {
-          version,
-          name
-        };
-      } catch (err) {
-        //
-        console.error('! getInfo error', err);
+        return JSON.parse(await ServerAPI.rest.request('info'));
+      } catch (error) {
+        DesktopAPI.logToFile(`REST info failed: ${error?.toString()}`);
+        return undefined;
       }
-
-      return undefined;
     },
-    getPlayers: async (): Promise<TRconPlayer[]> => {
+    getPlayers: async (): Promise<TRestPlayer[]> => {
       try {
-        const result = (
-          (await ServerAPI.rcon.execute(RconCommand.SHOW_PLAYERS)) || ''
-        ).trim();
+        const result = JSON.parse(await ServerAPI.rest.request('players'));
+        const players: TRestPlayer[] = result?.players ?? [];
 
-        const lines = result.split('\n');
+        players.forEach((player) => {
+          const steamId = player.userId?.replace(/^steam_/, '');
 
-        lines.shift(); // remove the first line which is the header
-
-        const players = lines.map((line) => {
-          const [name, uid, steamId] = line.split(',').map((s) => s.trim());
-          const player: TRconPlayer = {
-            name,
-            uid,
-            steamId
-          };
-
-          ServerAPI.utils.getProfileAvatarURL(steamId); // crawl steam profile image and cache the url in the store so we don't have to do it again for the same player
-
-          return player;
+          if (steamId) {
+            // crawl steam profile image and cache the url in the store
+            ServerAPI.utils.getProfileAvatarURL(steamId);
+          }
         });
 
         return players;
-      } catch {
-        //
+      } catch (error) {
+        DesktopAPI.logToFile(`REST players failed: ${error?.toString()}`);
+        return [];
       }
-
-      return [];
     },
     save: async () => {
-      await ServerAPI.rcon.execute(RconCommand.SAVE);
+      await ServerAPI.rest.request('save');
     },
-    shutdown: async (
-      message: string = 'Server is being shutdown',
-      seconds?: number
-    ) => {
-      const command = `${RconCommand.SHUTDOWN} ${seconds ?? 1} ${message}`;
-
-      await ServerAPI.rcon.execute(command);
+    announce: async (message: string) => {
+      await ServerAPI.rest.request('announce', { message });
     },
-    sendMessage: async (messages: string) => {
-      const command = `${RconCommand.BROADCAST} ${messages}`;
-
-      await ServerAPI.rcon.execute(command);
+    kick: async (userId: string, message = '') => {
+      await ServerAPI.rest.request('kick', { userid: userId, message });
     },
-    ban: async (uid: string) => {
-      const command = `${RconCommand.BAN} ${uid}`;
-
-      await ServerAPI.rcon.execute(command);
-    },
-    kick: async (uid: string) => {
-      const command = `${RconCommand.KICK} ${uid}`;
-
-      await ServerAPI.rcon.execute(command);
+    ban: async (userId: string, message = '') => {
+      await ServerAPI.rest.request('ban', { userid: userId, message });
     }
   }
 };

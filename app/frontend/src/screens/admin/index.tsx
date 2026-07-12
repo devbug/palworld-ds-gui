@@ -31,10 +31,10 @@ import {
 } from '@tabler/icons-react';
 import { Modal, ServerStatus, TGenericObject } from '../../types';
 import { openModal, requestConfirmation } from '../../actions/modal';
-import { TRconInfo, TRconPlayer } from '../../types/rcon';
+import { TRestInfo } from '../../types/rest';
 import useServerConfig from '../../hooks/use-server-config';
 import { ConfigKey } from '../../types/server-config';
-import { notifySuccess } from '../../actions/app';
+import { notifyError, notifySuccess } from '../../actions/app';
 import { ServerAPI } from '../../server';
 import useServerStatus from '../../hooks/use-server-status';
 import { useTranslation } from 'react-i18next';
@@ -63,11 +63,17 @@ const getColumns = () => [
   }
 ];
 
+type TAdminPlayerRow = {
+  key: string;
+  name: string;
+  uid: string;
+  userId: string;
+  steamId: string;
+  image?: string;
+};
+
 type TAdminActionsProps = {
-  player: TRconPlayer & {
-    key: string;
-    image: string;
-  };
+  player: TAdminPlayerRow;
 };
 
 const AdminActions = ({ player }: TAdminActionsProps) => {
@@ -80,7 +86,7 @@ const AdminActions = ({ player }: TAdminActionsProps) => {
       confirmLabel: t('admin.ban'),
       variant: 'danger',
       onConfirm: async () => {
-        await ServerAPI.rcon.ban(player.uid);
+        await ServerAPI.rest.ban(player.userId);
       }
     });
   };
@@ -92,7 +98,7 @@ const AdminActions = ({ player }: TAdminActionsProps) => {
       confirmLabel: t('admin.kick'),
       variant: 'danger',
       onConfirm: async () => {
-        await ServerAPI.rcon.kick(player.uid);
+        await ServerAPI.rest.kick(player.userId);
       }
     });
   };
@@ -129,12 +135,11 @@ const AdminActions = ({ player }: TAdminActionsProps) => {
 const Admin = () => {
   const { t } = useTranslation();
   const serverStatus = useServerStatus();
-  const hasLoadedFirst = useRef(false);
   const intervalRef = useRef<NodeJS.Timeout>();
   const steamImages = useSteamImages();
   const serverConfig = useServerConfig();
   const [isOnline, setIsOnline] = useState(false);
-  const [info, setInfo] = useState<TRconInfo | undefined>();
+  const [info, setInfo] = useState<TRestInfo | undefined>();
   const [loading, setLoading] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [rows, setRows] = useState<TGenericObject[]>([]);
@@ -143,15 +148,15 @@ const Admin = () => {
     return rows.map((row) => ({
       ...row,
       image: steamImages[row.steamId]
-    })) as TRconPlayer[];
+    })) as TAdminPlayerRow[];
   }, [rows, steamImages]);
 
   const loadInfo = async () => {
     setIsOnline(false);
 
-    const result = await ServerAPI.rcon.getInfo();
+    const result = await ServerAPI.rest.getInfo();
 
-    if (result?.name) {
+    if (result?.servername) {
       setIsOnline(true);
       loadPlayers();
     } else {
@@ -164,10 +169,13 @@ const Admin = () => {
   const loadPlayers = async () => {
     setLoading(true);
 
-    const players = await ServerAPI.rcon.getPlayers();
+    const players = await ServerAPI.rest.getPlayers();
     const processedPlayers = players.map((player) => ({
-      ...player,
-      key: player.uid
+      key: player.playerId,
+      name: player.name,
+      uid: player.playerId,
+      userId: player.userId,
+      steamId: player.userId?.replace(/^steam_/, '') ?? ''
     }));
 
     setRows(processedPlayers);
@@ -175,16 +183,26 @@ const Admin = () => {
   };
 
   const onSendMessageClick = async () => {
-    await ServerAPI.rcon.sendMessage(message);
-    setMessage('');
-    notifySuccess(t('admin.messageSent'));
+    try {
+      await ServerAPI.rest.announce(message);
+      setMessage('');
+      notifySuccess(t('admin.messageSent'));
+    } catch (error) {
+      notifyError(t('admin.requestFailed', { error }));
+    }
   };
 
   const onSaveClick = async () => {
     setIsSaving(true);
-    await ServerAPI.rcon.save();
-    setIsSaving(false);
-    notifySuccess(t('admin.saveExecuted'));
+
+    try {
+      await ServerAPI.rest.save();
+      notifySuccess(t('admin.saveExecuted'));
+    } catch (error) {
+      notifyError(t('admin.requestFailed', { error }));
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   const onRefreshClick = async () => {
@@ -193,17 +211,14 @@ const Admin = () => {
   };
 
   useEffect(() => {
-    if (hasLoadedFirst.current) {
+    if (serverStatus !== ServerStatus.STARTED) {
+      setIsOnline(false);
       return;
-    } else {
-      hasLoadedFirst.current = true;
     }
 
-    if (serverStatus !== ServerStatus.STARTED) return;
+    loadInfo();
 
     intervalRef.current = setInterval(() => loadInfo(), 60 * 1000); // 1 minute interval to refresh the data
-
-    loadInfo();
 
     return () => {
       if (intervalRef.current) {
@@ -211,7 +226,7 @@ const Admin = () => {
       }
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [serverStatus]);
 
   return (
     <Layout
@@ -233,9 +248,9 @@ const Admin = () => {
       }
       rightSlot={
         <div className="flex gap-2 w-full justify-center items-center">
-          {!serverConfig[ConfigKey.RCONEnabled] ? (
+          {!serverConfig[ConfigKey.RESTAPIEnabled] ? (
             <div>
-              <Tooltip content={t('admin.rconDisabledTooltip')}>
+              <Tooltip content={t('admin.restDisabledTooltip')}>
                 <IconAlertCircle size="1.3rem" color="yellow" />
               </Tooltip>
             </div>
@@ -266,7 +281,7 @@ const Admin = () => {
               size="sm"
               onClick={onRefreshClick}
               isLoading={loading}
-              isDisabled={!isOnline}
+              isDisabled={serverStatus !== ServerStatus.STARTED}
               endContent={<IconRefresh size="0.9rem" />}
             >
               {t('common.refresh')}

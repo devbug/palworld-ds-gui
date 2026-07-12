@@ -13,7 +13,6 @@ import (
 	"strings"
 	"time"
 
-	"github.com/go-resty/resty/v2"
 	"github.com/mitchellh/go-ps"
 )
 
@@ -154,59 +153,12 @@ func (s *ServerManager) handleStdStream(stream *io.ReadCloser) {
 }
 
 func (s *ServerManager) SendAnnounce(msg string) error {
-	currentConfigStr := ReadConfig()
-	var adminPassword, restapiPort, restapiEnabled string
-	{
-		re := regexp.MustCompile(`AdminPassword="([^\s,]+)"`)
-		match := re.FindStringSubmatch(currentConfigStr)
-		if len(match) == 2 {
-			adminPassword = match[1]
-		}
-	}
-	{
-		re := regexp.MustCompile(`RESTAPIPort=([^\s,]+)`)
-		match := re.FindStringSubmatch(currentConfigStr)
-		if len(match) == 2 {
-			restapiPort = match[1]
-		}
-	}
-	{
-		re := regexp.MustCompile(`RESTAPIEnabled=([^\s,]+)`)
-		match := re.FindStringSubmatch(currentConfigStr)
-		if len(match) == 2 {
-			restapiEnabled = match[1]
-		}
+	_, err := CallGameRestApiJSON("announce", map[string]string{"message": msg})
+	if err != nil {
+		utils.Log(fmt.Sprint("announce REST API failed: ", err))
 	}
 
-	if strings.EqualFold(restapiEnabled, "false") {
-		utils.Log("[WARNING] REST API disabled")
-		return nil
-	}
-
-	if len(adminPassword) == 0 /*|| len(restapiPort) == 0*/ {
-		utils.Log(fmt.Sprintf("server config parse failed: %v || %v", adminPassword, restapiPort))
-	} else {
-		if len(restapiPort) == 0 {
-			restapiPort = "8212"
-		}
-
-		client := resty.New()
-		client.SetDisableWarn(true)
-		client.SetBaseURL(fmt.Sprintf("http://127.0.0.1:%v", restapiPort))
-		client.SetBasicAuth("admin", adminPassword)
-		client.SetHeader("Accept", "application/json")
-
-		resp, err := client.R().
-			SetBody(`{ "message": "` + msg + `" }`).
-			Post("v1/api/announce")
-		if resp.StatusCode() != 200 || err != nil {
-			utils.Log(fmt.Sprint("announce REST API failed: ", resp.Status(), err))
-		}
-
-		return err
-	}
-
-	return nil
+	return err
 }
 
 func (s *ServerManager) Start() error {

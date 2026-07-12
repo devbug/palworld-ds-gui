@@ -15,7 +15,7 @@ func RestoreBackupHandler(conn *websocket.Conn, data []byte) {
 	err := json.Unmarshal(data, &message)
 	if err != nil {
 		utils.Log(err.Error())
-		conn.WriteJSON(BaseResponse{
+		SafeWriteJSON(conn, BaseResponse{
 			Event:   restoreBackupEvent,
 			EventId: message.EventId,
 			Success: false,
@@ -27,7 +27,7 @@ func RestoreBackupHandler(conn *websocket.Conn, data []byte) {
 	err = backupmanager.Restore(message.Data.Filename)
 	if err != nil {
 		utils.Log(err.Error())
-		conn.WriteJSON(BaseResponse{
+		SafeWriteJSON(conn, BaseResponse{
 			Event:   restoreBackupEvent,
 			EventId: message.EventId,
 			Success: false,
@@ -38,7 +38,7 @@ func RestoreBackupHandler(conn *websocket.Conn, data []byte) {
 
 	EmitServerStatus("STOPPED", nil)
 
-	conn.WriteJSON(BaseResponse{
+	SafeWriteJSON(conn, BaseResponse{
 		Event:   restoreBackupEvent,
 		EventId: message.EventId,
 		Success: true,

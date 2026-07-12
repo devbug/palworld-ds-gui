@@ -15,7 +15,7 @@ func GetBackupsConfigHandler(conn *websocket.Conn, data []byte) {
 	err := json.Unmarshal(data, &message)
 	if err != nil {
 		utils.Log(err.Error())
-		conn.WriteJSON(BaseResponse{
+		SafeWriteJSON(conn, BaseResponse{
 			Event:   getBackupsConfigEvent,
 			EventId: message.EventId,
 			Success: false,
@@ -24,7 +24,7 @@ func GetBackupsConfigHandler(conn *websocket.Conn, data []byte) {
 		return
 	}
 
-	conn.WriteJSON(GetBackupsConfigResponse{
+	SafeWriteJSON(conn, GetBackupsConfigResponse{
 		BaseResponse: BaseResponse{
 			Event:   getBackupsConfigEvent,
 			EventId: message.EventId,

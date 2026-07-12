@@ -110,6 +110,14 @@ type SaveLaunchParamsRequest struct {
 	}
 }
 
+type RestApiRequest struct {
+	BaseRequest
+	Data struct {
+		Endpoint string `json:"endpoint"`
+		Body     string `json:"body"`
+	}
+}
+
 type RconExecRequest struct {
 	BaseRequest
 	Data struct {

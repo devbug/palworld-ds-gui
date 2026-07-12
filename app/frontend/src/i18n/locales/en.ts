@@ -212,14 +212,15 @@ const en = {
     title: 'Admin',
     connecting: 'Connecting...',
     executeCommand: 'Execute Command',
-    rconDisabledTooltip:
-      'RCON is disabled on the local server. Enable RCON on the server settings to use this section.',
+    restDisabledTooltip:
+      'The REST API is disabled on the server. Enable "REST API Enabled" in the game settings to use this section.',
     refreshTooltip: 'Gets fresh data from the server',
     saveTooltip: 'Executes the save command on the server',
     messagePlaceholder: 'Write a message to send to the server...',
     messageSent: 'Message sent',
     saveExecuted: 'Save command executed',
     dataRefreshed: 'Data refreshed',
+    requestFailed: 'Request failed: {{error}}',
     columns: {
       image: 'Image',
       name: 'Name',
