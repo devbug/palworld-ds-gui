@@ -37,8 +37,14 @@ func GetCurrentDir() string {
 }
 
 func GetAppDataDir() string {
-	appDataDir := os.Getenv("APPDATA")
-	return filepath.Join(appDataDir, "PalworldDSGUI")
+	// Windows에서는 %APPDATA%(Roaming), macOS에서는 ~/Library/Application Support,
+	// Linux에서는 ~/.config을 반환하므로 기존 Windows 경로와 호환된다.
+	configDir, err := os.UserConfigDir()
+	if err != nil {
+		return filepath.Join(GetCurrentDir(), "PalworldDSGUI")
+	}
+
+	return filepath.Join(configDir, "PalworldDSGUI")
 }
 
 func LogToFile(message string) {

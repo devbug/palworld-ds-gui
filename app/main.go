@@ -29,8 +29,8 @@ var (
 )
 
 func main() {
-	if _, err := os.Stat(utils.Config.AppDataDir); os.IsNotExist(err) {
-		os.MkdirAll(utils.Config.AppDataDir, 0755)
+	if err := os.MkdirAll(utils.Config.AppDataDir, 0755); err != nil {
+		panic(err)
 	}
 
 	logsFile, logErr := os.OpenFile(utils.Config.LogsPath, os.O_RDWR|os.O_CREATE, 0666)
